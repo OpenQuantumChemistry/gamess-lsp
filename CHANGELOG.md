@@ -50,8 +50,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
-- Fixed code quality issues (removed unused variables and imports)
-- All lint checks now pass with ruff
+- Improved code quality with black and isort formatting
+- Enhanced type annotations for better mypy compliance
+- Added return type annotation to `GAMESSParser.__init__()`
+- Fixed `documentation` parameter type in `CompletionItem` (now uses `str` instead of `Sequence`)
+- Fixed `location` parameter type in `SymbolInformation` (now uses `Location` object instead of `dict`)
+- Added `coverage.json` to `.gitignore`
+
+### Technical Details
+- All 67 tests pass with 100% coverage
+- Mypy type checking: Success, no issues found
+- Flake8 code quality check: Passed
 
 ### Added
 - **Enhanced Keywords Database**:
