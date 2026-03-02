@@ -16,13 +16,11 @@ from lsprotocol.types import (
     HoverParams,
     Position,
     Range,
-    TextDocumentIdentifier,
-    TextDocumentItem,
 )
 from pygls.server import LanguageServer
 from pygls.workspace import Document
 
-from .parser import GAMESSParser, parse_gamess_input
+from .parser import GAMESSParser
 from .keywords import GAMESS_KEYWORDS, GAMESS_GROUPS
 
 
