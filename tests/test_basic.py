@@ -2,7 +2,6 @@
 Basic tests for gamess-lsp
 """
 
-import pytest
 from gamess_lsp import __version__
 
 

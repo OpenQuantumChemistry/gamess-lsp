@@ -43,7 +43,7 @@ document_cache: dict = {}
 def _get_diagnostics(content: str) -> List[Diagnostic]:
     """Get diagnostics for GAMESS input content."""
     parser = GAMESSParser()
-    parsed = parser.parse(content)
+    parser.parse(content)  # Parse to populate diagnostics
     
     diagnostics = []
     for item in parser.get_diagnostics():
@@ -360,7 +360,6 @@ def document_symbol(params: DocumentSymbolParams) -> List[SymbolInformation]:
     """
     doc = server.workspace.get_text_document(params.text_document.uri)
     content = doc.source
-    lines = content.split('\n')
     
     symbols = []
     

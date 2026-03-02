@@ -1,6 +1,5 @@
 """Tests for GAMESS keywords database."""
 
-import pytest
 from gamess_lsp.keywords import GAMESS_KEYWORDS, GAMESS_GROUPS
 
 

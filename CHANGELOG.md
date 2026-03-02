@@ -49,6 +49,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- Fixed code quality issues (removed unused variables and imports)
+- All lint checks now pass with ruff
+
 ### Added
 - **Enhanced Keywords Database**:
   - Added keyword definitions for 15 additional GAMESS groups

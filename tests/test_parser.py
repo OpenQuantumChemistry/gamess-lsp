@@ -1,6 +1,5 @@
 """Tests for GAMESS parser."""
 
-import pytest
 from gamess_lsp.parser import (
     GAMESSParser,
     GAMESSGroup,

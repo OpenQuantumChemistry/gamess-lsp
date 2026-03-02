@@ -1,13 +1,11 @@
 """Tests for GAMESS LSP server."""
 
-import pytest
-from unittest.mock import MagicMock, patch, Mock
+from unittest.mock import MagicMock, patch
 
 from gamess_lsp.server import (
     server,
     main,
     _get_diagnostics,
-    _update_document,
     _get_word_at_position,
     completion,
     hover,
@@ -15,7 +13,6 @@ from gamess_lsp.server import (
     did_change,
     diagnostic,
 )
-from gamess_lsp.parser import GAMESSParser
 
 
 class TestGAMESSServer:
