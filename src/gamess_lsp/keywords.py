@@ -362,3 +362,223 @@ Default: .TRUE.""",
         },
     },
 }
+
+# Additional GAMESS groups for comprehensive support
+ADDITIONAL_GROUPS = {
+    "RELWFN": """$RELWFN group - Relativistic wavefunction options.
+DKH, ZORA, and other relativistic corrections.""",
+    
+    "TAMC": """$TAMC group - Transition state and minimum energy path.
+Transition state search options.""",
+    
+    "MOROKM": """$MOROKM group - Morokuma energy decomposition.
+Interaction energy decomposition analysis.""",
+    
+    "EQUIL": """$EQUIL group - Equilibrium geometry search.
+Equilibrium structure optimization.""",
+    
+    "DECOMP": """$DECOMP group - Energy decomposition analysis.
+Decomposition of interaction energies.""",
+    
+    "MOLCAS": """$MOLCAS group - MOLCAS interface options.
+Interface to MOLCAS program.""",
+    
+    "CIM": """$CIM group - Cluster-in-molecule method.
+Local correlation methods.""",
+    
+    "LOCAL": """$LOCAL group - Localized orbital options.
+Orbital localization methods.""",
+    
+    "PMO": """$PMO group - Pipek-Mezey localization.
+Orbital localization criteria.""",
+    
+    "GEM": """$GEM group - Gaussian electrostatic model.
+GEM fragment calculations.""",
+    
+    "ELMOM": """$ELMOM group - Electric multipole moments.
+Multipole moment calculations.""",
+    
+    "AIMPAC": """$AIMPAC group - AIM analysis options.
+Atoms in molecules analysis.""",
+    
+    "FRIEND": """$FRIEND group - Interface to other programs.
+External program interfaces.""",
+    
+    "NBO": """$NBO group - Natural Bond Orbital analysis.
+NBO analysis options.""",
+    
+    "MAKVEC": """$MAKVEC group - Vector generation options.
+Molecular orbital vector generation.""",
+    
+    "RAMAN": """$RAMAN group - Raman spectroscopy options.
+Raman intensity calculations.""",
+    
+    "INPUT": """$INPUT group - Input file options.
+Input processing controls.""",
+    
+    "PUNCH": """$PUNCH group - Punch file options.
+Output file generation.""",
+    
+    "BENCH": """$BENCH group - Benchmarking options.
+Performance benchmarking controls.""",
+    
+    "PARALLEL": """$PARALLEL group - Parallel execution options.
+Distributed computing settings.""",
+    
+    "ACCURACY": """$ACCURACY group - Accuracy control options.
+Numerical precision settings.""",
+}
+
+# Update GAMESS_GROUPS with additional groups
+GAMESS_GROUPS.update(ADDITIONAL_GROUPS)
+
+# Additional keywords for existing groups
+ADDITIONAL_KEYWORDS = {
+    "CONTRL": {
+        "TDDFT": {
+            "doc": """Enable TDDFT calculation.
+Values: NONE, EXCITE (excited states).
+Default: NONE""",
+            "values": ["NONE", "EXCITE"]
+        },
+        "EFP": {
+            "doc": """Enable Effective Fragment Potential.
+Values: .TRUE., .FALSE.
+Default: .FALSE.""",
+            "values": [".TRUE.", ".FALSE.", "1", "0"]
+        },
+        "FRAGNAME": {
+            "doc": """Fragment name for EFP calculations.
+Specifies the fragment library name.""",
+            "values": []
+        },
+        "PROPS": {
+            "doc": """Property calculation flag.
+Values: .TRUE., .FALSE.
+Default: .FALSE.""",
+            "values": [".TRUE.", ".FALSE.", "1", "0"]
+        },
+    },
+    "SYSTEM": {
+        "PARALL": {
+            "doc": """Parallel execution flag.
+Values: .TRUE., .FALSE.
+Default: .FALSE.""",
+            "values": [".TRUE.", ".FALSE.", "1", "0"]
+        },
+        "KDIAG": {
+            "doc": """Number of parallel tasks for diagnostics.
+Default: 0""",
+            "values": []
+        },
+    },
+    "BASIS": {
+        "EXTFIL": {
+            "doc": """Read basis from external file.
+Values: .TRUE., .FALSE.
+Default: .FALSE.""",
+            "values": [".TRUE.", ".FALSE.", "1", "0"]
+        },
+        "BASNAM": {
+            "doc": """Basis set file name.
+External basis set library name.""",
+            "values": []
+        },
+    },
+    "SCF": {
+        "FSTATE": {
+            "doc": """Target SCF state for MCSCF.
+State number for optimization.""",
+            "values": []
+        },
+        "NWORD": {
+            "doc": """Memory for SCF in words.
+Default: 0 (auto)""",
+            "values": []
+        },
+    },
+    "DFT": {
+        "AUTHOR": {
+            "doc": """DFT functional author specification.
+Values: BECKE, PBE, B3LYP, etc.""",
+            "values": ["BECKE", "PBE", "B3LYP", "M06", "M06L"]
+        },
+        "LAMBDA": {
+            "doc": """Range-separation parameter.
+For long-range corrected functionals.""",
+            "values": []
+        },
+    },
+    "STATPT": {
+        "STPT": {
+            "doc": """Starting point for optimization.
+Values: .TRUE. (restart), .FALSE. (fresh).
+Default: .FALSE.""",
+            "values": [".TRUE.", ".FALSE.", "1", "0"]
+        },
+        "TRMAX": {
+            "doc": """Maximum trust radius.
+Default: 0.2""",
+            "values": []
+        },
+        "TRMIN": {
+            "doc": """Minimum trust radius.
+Default: 0.0""",
+            "values": []
+        },
+    },
+    "FORCE": {
+        "SIDE": {
+            "doc": """Projection side for vibrations.
+Values: +1, -1.""",
+            "values": ["+1", "-1"]
+        },
+        "SCLFAC": {
+            "doc": """Scaling factor for frequencies.
+Default: 1.0""",
+            "values": []
+        },
+        "ANHALG": {
+            "doc": """Anharmonic analysis algorithm.
+Values: 0, 1, 2.""",
+            "values": ["0", "1", "2"]
+        },
+    },
+    "MP2": {
+        "MP2PRP": {
+            "doc": """MP2 property calculation.
+Values: .TRUE., .FALSE.
+Default: .FALSE.""",
+            "values": [".TRUE.", ".FALSE.", "1", "0"]
+        },
+        "NACORE": {
+            "doc": """Number of core orbitals to freeze.
+Default: 0""",
+            "values": []
+        },
+    },
+    "CC": {
+        "NCORE": {
+            "doc": """Number of core orbitals to freeze.
+Default: 0""",
+            "values": []
+        },
+        "MAXCC": {
+            "doc": """Maximum CC iterations.
+Default: 50""",
+            "values": []
+        },
+        "CCCONV": {
+            "doc": """CC convergence criterion.
+Default: 1.0E-06""",
+            "values": []
+        },
+    },
+}
+
+# Update GAMESS_KEYWORDS with additional keywords
+for group, keywords in ADDITIONAL_KEYWORDS.items():
+    if group in GAMESS_KEYWORDS:
+        GAMESS_KEYWORDS[group].update(keywords)
+    else:
+        GAMESS_KEYWORDS[group] = keywords

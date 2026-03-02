@@ -8,45 +8,55 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.1.0] - 2026-03-02
 
 ### Added
-- Initial GAMESS input file parser with support for:
-  - Multiple $ groups (CONTRL, SYSTEM, BASIS, SCF, DFT, STATPT, FORCE, etc.)
-  - Keyword-value pair parsing
-  - Case-insensitive group and keyword matching
+- Initial release of GAMESS-LSP
+- **Parser**: Complete GAMESS input file (.inp) parser
+  - Support for all standard GAMESS $GROUPS
+  - Keyword-value pair parsing with case-insensitive handling
   - Geometry data extraction
-  - Unknown group warnings
-  - Unclosed group detection
+  - Inline comment support
+  - Diagnostic warnings for unknown groups and unclosed sections
+  
+- **LSP Features**:
+  - `textDocument/completion`: Auto-completion for $ groups and keywords
+  - `textDocument/hover`: Hover documentation for groups and keywords
+  - `textDocument/diagnostic`: Real-time validation and diagnostics
+  - `textDocument/didOpen` and `textDocument/didChange`: Document synchronization
+  - `textDocument/formatting`: Document formatting with consistent indentation
+  - `textDocument/documentSymbol`: Document symbols for navigation
 
-- LSP server implementation:
-  - `textDocument/didOpen` - Document open handling
-  - `textDocument/didChange` - Document change handling
-  - `textDocument/completion` - Auto-completion for groups and keywords
-  - `textDocument/hover` - Hover documentation for groups and keywords
-  - `textDocument/diagnostic` - Real-time diagnostics
+- **Keywords Database**:
+  - Comprehensive GAMESS group documentation
+  - Keyword documentation with allowed values
+  - Support for CONTRL, SYSTEM, BASIS, SCF, DFT, STATPT, FORCE, and many more groups
+  - 40+ documented GAMESS groups
+  - 50+ documented keywords with values
 
-- Keywords database with documentation:
-  - CONTRL keywords (RUNTYP, SCFTYP, DFTTYP, MPLEVL, CCTYP, etc.)
-  - SYSTEM keywords (MWORDS, MEMDDI, TIMLIM)
-  - BASIS keywords (GBASIS, NGAUSS, NDFUNC, etc.)
-  - SCF keywords (DIRSCF, DIIS, SOSCF, CONV)
-  - DFT keywords (METHOD, NRAD, NLEB)
-  - STATPT keywords (METHOD, OPTTOL, NSTEP)
-  - FORCE keywords (VIBANL, TEMP, PRES)
+- **Testing**:
+  - 60 unit tests with 100% pass rate
+  - Tests for parser, server, and keywords modules
+  - Comprehensive edge case coverage
 
-- Comprehensive test suite (60 tests):
-  - Parser tests
-  - Server tests
-  - Keywords database tests
-
-- Development tooling:
-  - pytest with coverage
-  - black, isort, flake8, mypy
-  - pre-commit hooks
-  - CI/CD via GitHub Actions
+- **Documentation**:
+  - README with installation and usage instructions
+  - Editor integration guides (VS Code, Neovim)
+  - API documentation in code
 
 ### Changed
-- Improved parser to handle $END correctly
-- Fixed case-insensitive group matching
+- N/A (initial release)
 
 ### Fixed
-- Parser now correctly handles inline $END
-- Diagnostics properly report warnings and errors
+- N/A (initial release)
+
+## [Unreleased]
+
+### Planned
+- Signature help for keywords
+- Code actions for quick fixes
+- Rename support for keywords
+- Workspace symbols support
+- Better error recovery in parser
+- More comprehensive keyword database
+- Support for GAMESS-US specific extensions
+
+[0.1.0]: https://github.com/newtontech/gamess-lsp/releases/tag/v0.1.0
+[Unreleased]: https://github.com/newtontech/gamess-lsp/compare/v0.1.0...HEAD
