@@ -5,7 +5,6 @@ import re
 from typing import Any, List, Optional
 
 from lsprotocol.types import (
-    Location,
     CompletionItem,
     CompletionItemKind,
     CompletionList,
@@ -18,6 +17,7 @@ from lsprotocol.types import (
     DocumentSymbolParams,
     Hover,
     HoverParams,
+    Location,
     Position,
     Range,
     SymbolInformation,
@@ -365,7 +365,9 @@ def document_symbol(params: DocumentSymbolParams) -> List[SymbolInformation]:
         symbol = SymbolInformation(
             name=f"${group_name}",
             kind=SymbolKind.Class,
-            location=Location(uri=params.text_document.uri, range=Range(
+            location=Location(
+                uri=params.text_document.uri,
+                range=Range(
                     start=Position(line=group.line_start - 1, character=0),
                     end=Position(line=group.line_end - 1, character=0),
                 ),
@@ -378,7 +380,9 @@ def document_symbol(params: DocumentSymbolParams) -> List[SymbolInformation]:
             kw_symbol = SymbolInformation(
                 name=keyword_name,
                 kind=SymbolKind.Property,
-                location=Location(uri=params.text_document.uri, range=Range(
+                location=Location(
+                    uri=params.text_document.uri,
+                    range=Range(
                         start=Position(line=keyword.line_number - 1, character=0),
                         end=Position(line=keyword.line_number - 1, character=100),
                     ),
