@@ -1,10 +1,10 @@
 """Tests for GAMESS parser."""
 
 from gamess_lsp.parser import (
-    GAMESSParser,
     GAMESSGroup,
-    GAMESSKeyword,
     GAMESSInputFile,
+    GAMESSKeyword,
+    GAMESSParser,
     parse_gamess_input,
 )
 
@@ -35,7 +35,7 @@ class TestGAMESSGroup:
         group = GAMESSGroup(name="CONTRL")
         kw = GAMESSKeyword(name="SCFTYP", value="RHF", line_number=5)
         group.add_keyword(kw)
-        
+
         assert "SCFTYP" in group.keywords
         assert group.get_keyword("SCFTYP").value == "RHF"
 
@@ -44,10 +44,10 @@ class TestGAMESSGroup:
         group = GAMESSGroup(name="CONTRL")
         kw = GAMESSKeyword(name="ScfTyp", value="RHF", line_number=5)
         group.add_keyword(kw)
-        
+
         assert group.get_keyword("SCFTYP") is not None
         assert group.get_keyword("scftyp") is not None
-    
+
     def test_get_keyword_not_found(self):
         """Test getting non-existent keyword."""
         group = GAMESSGroup(name="CONTRL")
@@ -69,10 +69,10 @@ class TestGAMESSInputFile:
         inp = GAMESSInputFile()
         group = GAMESSGroup(name="CONTRL")
         inp.add_group(group)
-        
+
         assert inp.get_group("CONTRL") is not None
         assert inp.get_group("contrl") is not None
-    
+
     def test_get_group_not_found(self):
         """Test getting non-existent group."""
         inp = GAMESSInputFile()
@@ -100,7 +100,7 @@ class TestGAMESSParser:
         content = """$CONTRL SCFTYP=RHF RUNTYP=ENERGY $END"""
         parser = GAMESSParser()
         result = parser.parse(content)
-        
+
         assert "CONTRL" in result.groups
         group = result.groups["CONTRL"]
         assert group.get_keyword("SCFTYP").value == "RHF"
@@ -114,7 +114,7 @@ class TestGAMESSParser:
 $END"""
         parser = GAMESSParser()
         result = parser.parse(content)
-        
+
         assert "CONTRL" in result.groups
         group = result.groups["CONTRL"]
         assert group.get_keyword("SCFTYP").value == "RHF"
@@ -127,7 +127,7 @@ $SYSTEM MWORDS=10 $END
 $BASIS GBASIS=CC-PVDZ $END"""
         parser = GAMESSParser()
         result = parser.parse(content)
-        
+
         assert "CONTRL" in result.groups
         assert "SYSTEM" in result.groups
         assert "BASIS" in result.groups
@@ -137,7 +137,7 @@ $BASIS GBASIS=CC-PVDZ $END"""
         content = """$CONTRL SCFTYP=RHF"""
         parser = GAMESSParser()
         result = parser.parse(content)
-        
+
         assert "CONTRL" in result.groups
         assert len(parser.warnings) == 1
         assert "not properly closed" in parser.warnings[0]["message"]
@@ -147,7 +147,7 @@ $BASIS GBASIS=CC-PVDZ $END"""
         content = """$UNKNOWN KEYWORD=VALUE $END"""
         parser = GAMESSParser()
         result = parser.parse(content)
-        
+
         assert "UNKNOWN" in result.groups
         # Should have 2 warnings: unknown group + not properly closed (since $END is after)
         assert len(parser.warnings) >= 1
@@ -160,7 +160,7 @@ $CONTRL SCFTYP=RHF $END
 ! Another comment"""
         parser = GAMESSParser()
         result = parser.parse(content)
-        
+
         assert "CONTRL" in result.groups
 
     def test_parse_quoted_values(self):
@@ -168,7 +168,7 @@ $CONTRL SCFTYP=RHF $END
         content = """$CONTRL EXETYP="CHECK" $END"""
         parser = GAMESSParser()
         result = parser.parse(content)
-        
+
         assert result.groups["CONTRL"].get_keyword("EXETYP").value == "CHECK"
 
     def test_parse_geometry(self):
@@ -181,7 +181,7 @@ O 1.0 0.0 0.0
 $END"""
         parser = GAMESSParser()
         result = parser.parse(content)
-        
+
         assert len(result.geometry) == 2
         assert result.geometry[0]["symbol"] == "H"
         assert result.geometry[0]["x"] == 0.0
@@ -195,7 +195,7 @@ $END
 Line 5"""
         parser = GAMESSParser()
         parser.parse(content)
-        
+
         assert parser.get_group_at_position(content, 2) == "CONTRL"
         assert parser.get_group_at_position(content, 3) == "CONTRL"
         assert parser.get_group_at_position(content, 5) is None
@@ -205,7 +205,7 @@ Line 5"""
         content = """$UNKNOWN $END"""
         parser = GAMESSParser()
         parser.parse(content)
-        
+
         diagnostics = parser.get_diagnostics()
         assert len(diagnostics) >= 1
         assert diagnostics[0]["severity"] == "warning"
@@ -218,7 +218,7 @@ $CONTRL SCFTYP=RHF $END
 """
         parser = GAMESSParser()
         result = parser.parse(content)
-        
+
         assert "CONTRL" in result.groups
 
     def test_parse_mixed_case_group(self):
@@ -226,7 +226,7 @@ $CONTRL SCFTYP=RHF $END
         content = """$Contrl ScfTyp=RHF $end"""
         parser = GAMESSParser()
         result = parser.parse(content)
-        
+
         assert "CONTRL" in result.groups
         assert result.groups["CONTRL"].get_keyword("SCFTYP").value == "RHF"
 
@@ -245,7 +245,7 @@ O  0.0  0.0    0.0
  $END"""
         parser = GAMESSParser()
         result = parser.parse(content)
-        
+
         assert "CONTRL" in result.groups
         assert "SYSTEM" in result.groups
         assert "BASIS" in result.groups
@@ -259,6 +259,6 @@ class TestParseGamessInput:
         """Test convenience function."""
         content = """$CONTRL SCFTYP=RHF $END"""
         result = parse_gamess_input(content)
-        
+
         assert isinstance(result, GAMESSInputFile)
         assert "CONTRL" in result.groups

@@ -3,15 +3,15 @@
 from unittest.mock import MagicMock, patch
 
 from gamess_lsp.server import (
-    server,
-    main,
     _get_diagnostics,
     _get_word_at_position,
     completion,
-    hover,
-    did_open,
-    did_change,
     diagnostic,
+    did_change,
+    did_open,
+    hover,
+    main,
+    server,
 )
 
 
@@ -71,38 +71,38 @@ class TestGetWordAtPosition:
 class TestCompletion:
     """Test completion feature."""
 
-    @patch('gamess_lsp.server.server')
+    @patch("gamess_lsp.server.server")
     def test_completion_groups(self, mock_server):
         """Test completion for groups."""
         mock_doc = MagicMock()
         mock_doc.source = ""
         mock_doc.lines = ["$"]
         mock_server.workspace.get_text_document.return_value = mock_doc
-        
+
         params = MagicMock()
         params.text_document.uri = "test://test.inp"
         params.position.line = 0
         params.position.character = 1
-        
+
         result = completion(params)
         assert result is not None
         assert len(result.items) > 0
         # Should suggest groups starting with $
         assert any("$CONTRL" in item.label for item in result.items)
 
-    @patch('gamess_lsp.server.server')
+    @patch("gamess_lsp.server.server")
     def test_completion_with_content(self, mock_server):
         """Test completion with file content."""
         mock_doc = MagicMock()
         mock_doc.source = "$CONTRL "
         mock_doc.lines = ["$CONTRL "]
         mock_server.workspace.get_text_document.return_value = mock_doc
-        
+
         params = MagicMock()
         params.text_document.uri = "test://test.inp"
         params.position.line = 0
         params.position.character = 8
-        
+
         result = completion(params)
         assert result is not None
 
@@ -110,35 +110,35 @@ class TestCompletion:
 class TestHover:
     """Test hover feature."""
 
-    @patch('gamess_lsp.server.server')
+    @patch("gamess_lsp.server.server")
     def test_hover_group(self, mock_server):
         """Test hover for group name."""
         mock_doc = MagicMock()
         mock_doc.source = "$CONTRL"
         mock_doc.lines = ["$CONTRL"]
         mock_server.workspace.get_text_document.return_value = mock_doc
-        
+
         params = MagicMock()
         params.text_document.uri = "test://test.inp"
         params.position.line = 0
         params.position.character = 3
-        
+
         result = hover(params)
         assert result is not None
 
-    @patch('gamess_lsp.server.server')
+    @patch("gamess_lsp.server.server")
     def test_hover_no_word(self, mock_server):
         """Test hover with no word at position."""
         mock_doc = MagicMock()
         mock_doc.source = "   "
         mock_doc.lines = ["   "]
         mock_server.workspace.get_text_document.return_value = mock_doc
-        
+
         params = MagicMock()
         params.text_document.uri = "test://test.inp"
         params.position.line = 0
         params.position.character = 1
-        
+
         result = hover(params)
         assert result is None
 
@@ -146,17 +146,17 @@ class TestHover:
 class TestDidOpen:
     """Test did_open feature."""
 
-    @patch('gamess_lsp.server.server')
+    @patch("gamess_lsp.server.server")
     def test_did_open(self, mock_server):
         """Test document open."""
         mock_doc = MagicMock()
         mock_doc.source = "$CONTRL $END"
         mock_doc.uri = "test://test.inp"
         mock_server.workspace.get_text_document.return_value = mock_doc
-        
+
         params = MagicMock()
         params.text_document.uri = "test://test.inp"
-        
+
         # Should not raise
         did_open(params)
 
@@ -164,17 +164,17 @@ class TestDidOpen:
 class TestDidChange:
     """Test did_change feature."""
 
-    @patch('gamess_lsp.server.server')
+    @patch("gamess_lsp.server.server")
     def test_did_change(self, mock_server):
         """Test document change."""
         mock_doc = MagicMock()
         mock_doc.source = "$CONTRL $END"
         mock_doc.uri = "test://test.inp"
         mock_server.workspace.get_text_document.return_value = mock_doc
-        
+
         params = MagicMock()
         params.text_document.uri = "test://test.inp"
-        
+
         # Should not raise
         did_change(params)
 
@@ -182,16 +182,16 @@ class TestDidChange:
 class TestDiagnostic:
     """Test diagnostic feature."""
 
-    @patch('gamess_lsp.server.server')
+    @patch("gamess_lsp.server.server")
     def test_diagnostic(self, mock_server):
         """Test diagnostic request."""
         mock_doc = MagicMock()
         mock_doc.source = "$CONTRL $END"
         mock_server.workspace.get_text_document.return_value = mock_doc
-        
+
         params = MagicMock()
         params.text_document.uri = "test://test.inp"
-        
+
         result = diagnostic(params)
         assert isinstance(result, list)
 
@@ -199,15 +199,16 @@ class TestDiagnostic:
 class TestMain:
     """Test main entry point."""
 
-    @patch('gamess_lsp.server.server.start_io')
+    @patch("gamess_lsp.server.server.start_io")
     def test_main(self, mock_start):
         """Test main function."""
         main()
         mock_start.assert_called_once()
 
-    @patch('gamess_lsp.server.server.start_io')
+    @patch("gamess_lsp.server.server.start_io")
     def test_main_module(self, mock_start):
         """Test main as module."""
         import gamess_lsp.server as server_module
+
         server_module.main()
         mock_start.assert_called_once()

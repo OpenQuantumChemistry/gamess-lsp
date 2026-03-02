@@ -2,13 +2,13 @@
 
 __version__ = "0.1.0"
 
-from .parser import GAMESSParser, GAMESSGroup, GAMESSKeyword, GAMESSInputFile, parse_gamess_input
-from .keywords import GAMESS_KEYWORDS, GAMESS_GROUPS
+from .keywords import GAMESS_GROUPS, GAMESS_KEYWORDS
+from .parser import GAMESSGroup, GAMESSInputFile, GAMESSKeyword, GAMESSParser, parse_gamess_input
 
 __all__ = [
     "__version__",
     "GAMESSParser",
-    "GAMESSGroup", 
+    "GAMESSGroup",
     "GAMESSKeyword",
     "GAMESSInputFile",
     "parse_gamess_input",

@@ -1,6 +1,6 @@
 """Tests for GAMESS keywords database."""
 
-from gamess_lsp.keywords import GAMESS_KEYWORDS, GAMESS_GROUPS
+from gamess_lsp.keywords import GAMESS_GROUPS, GAMESS_KEYWORDS
 
 
 class TestGAMESSGroups:
@@ -124,7 +124,6 @@ class TestGAMESSKeywords:
         force = GAMESS_KEYWORDS["FORCE"]
         assert "VIBANL" in force
         assert "TEMP" in force
-
 
     def test_guess_keywords(self):
         """Test GUESS keywords exist."""
