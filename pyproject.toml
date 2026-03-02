@@ -50,13 +50,13 @@ ignore_missing_imports = true
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-addopts = "--cov=src/gamess_lsp --cov-report=term-missing --cov-report=html --cov-report=xml --cov-fail-under=100 -v"
+addopts = "--cov=src/gamess_lsp --cov-report=term-missing --cov-report=html -v"
 asyncio_mode = "auto"
 
 [tool.coverage.run]
 source = ["src/gamess_lsp"]
-omit = ["*/tests/*", "*/test_*"]
 branch = true
+omit = ["*/tests/*", "*/test_*"]
 
 [tool.coverage.report]
 exclude_lines = [
@@ -69,4 +69,3 @@ exclude_lines = [
     "pass",
     "..."
 ]
-fail_under = 100

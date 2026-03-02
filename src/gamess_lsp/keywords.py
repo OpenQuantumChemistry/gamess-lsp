@@ -1,0 +1,364 @@
+"""GAMESS keywords database."""
+
+GAMESS_GROUPS = {
+    "CONTRL": """$CONTRL group - Main control options for GAMESS calculation.
+This group controls the calculation type, theory level, and run options.""",
+    
+    "SYSTEM": """$SYSTEM group - System-specific options.
+Memory allocation, timing, and parallelization settings.""",
+    
+    "BASIS": """$BASIS group - Basis set specification.
+Controls the basis set used for the calculation.""",
+    
+    "SCF": """$SCF group - SCF (Hartree-Fock) calculation options.
+Controls convergence criteria and SCF algorithm.""",
+    
+    "DFT": """$DFT group - Density Functional Theory options.
+Exchange-correlation functional and grid settings.""",
+    
+    "MP2": """$MP2 group - Møller-Plesset perturbation theory.
+MP2 energy and gradient calculation options.""",
+    
+    "CC": """$CC group - Coupled Cluster theory options.
+CCSD, CCSD(T) and other coupled cluster methods.""",
+    
+    "CIS": """$CIS group - Configuration Interaction Singles.
+CIS/TDHF excited state calculations.""",
+    
+    "TDDFT": """$TDDFT group - Time-Dependent DFT options.
+TDDFT excited state calculations.""",
+    
+    "STATPT": """$STATPT group - Geometry optimization options.
+Controls geometry convergence criteria and algorithm.""",
+    
+    "FORCE": """$FORCE group - Force constant calculation.
+Vibrational frequency and thermodynamic properties.""",
+    
+    "HESSIAN": """$HESSIAN group - Hessian matrix options.
+Analytic or numerical second derivatives.""",
+    
+    "VIB": """$VIB group - Vibrational analysis options.
+Mode following and anharmonic corrections.""",
+    
+    "IRC": """$IRC group - Intrinsic Reaction Coordinate.
+Reaction path following calculations.""",
+    
+    "DRC": """$DRC group - Dynamic Reaction Coordinate.
+Classical trajectory on potential energy surface.""",
+    
+    "GUESS": """$GUESS group - Initial guess options.
+Huckel, core, or restart guess for SCF.""",
+    
+    "VEC": """$VEC group - Molecular orbitals.
+User-provided MO coefficients.""",
+    
+    "DATA": """$DATA group - Molecular structure.
+Geometry and symmetry specification.""",
+    
+    "LIBRARY": """$LIBRARY group - Basis set library.
+External basis set library specification.""",
+    
+    "ECP": """$ECP group - Effective Core Potentials.
+Pseudopotential specification.""",
+    
+    "PCM": """$PCM group - Polarizable Continuum Model.
+Solvation effects with PCM.""",
+    
+    "COSM": """$COSM group - COSMO solvation model.
+Conductor-like screening model.""",
+    
+    "EFRAG": """$EFRAG group - Effective Fragment Potential.
+EFP fragments and positions.""",
+    
+    "FFIELD": """$FFIELD group - Force Field options.
+Molecular mechanics parameters.""",
+    
+    "SURFACE": """$SURFACE group - Potential energy surface scan.
+Coordinate scanning options.""",
+    
+    "TRUDGE": """$TRUDGE group - Trudge optimization.
+Simplex optimization method.""",
+    
+    "MCSCF": """$MCSCF group - Multiconfigurational SCF.
+CASSCF and RASSCF calculations.""",
+    
+    "CI": """$CI group - Configuration Interaction.
+Full CI or selected CI calculations.""",
+    
+    "DRT": """$DRT group - Determinant Reference Table.
+CI active space specification.""",
+}
+
+GAMESS_KEYWORDS = {
+    "CONTRL": {
+        "RUNTYP": {
+            "doc": """Type of calculation to perform.
+Values: ENERGY, GRADIENT, HESSIAN, OPTIMIZE, SADPOINT, IRC, DRC,
+        SURFACE, GLOBOP, OPTFMO, MEX, NAINTERP, NACOUPL, TRANSITN.
+Default: ENERGY""",
+            "values": ["ENERGY", "GRADIENT", "HESSIAN", "OPTIMIZE", "SADPOINT", 
+                      "IRC", "DRC", "SURFACE", "GLOBOP"]
+        },
+        "SCFTYP": {
+            "doc": """Type of SCF wavefunction.
+Values: RHF, UHF, ROHF, MCSCF, NONE.
+Default: RHF""",
+            "values": ["RHF", "UHF", "ROHF", "MCSCF", "NONE"]
+        },
+        "DFTTYP": {
+            "doc": """DFT exchange-correlation functional.
+Values: BLYP, B3LYP, PBE, PBE0, M06, M06L, etc.""",
+            "values": ["BLYP", "B3LYP", "PBE", "PBE0", "M06", "M06L", 
+                      "M062X", "M06HF", "B97D", "B97D3", "TPSS", "TPSSH"]
+        },
+        "MPLEVL": {
+            "doc": """Møller-Plesset perturbation theory level.
+Values: 0 (no MP), 2 (MP2).
+Default: 0""",
+            "values": ["0", "2"]
+        },
+        "CCTYP": {
+            "doc": """Coupled Cluster theory level.
+Values: CCSD, CCSD(T), CR-CC(2,3), LR-CCSD(T), etc.
+Default: none""",
+            "values": ["CCSD", "CCSD(T)", "CR-CC(2,3)", "LR-CCSD(T)"]
+        },
+        "CITYP": {
+            "doc": """CI calculation type.
+Values: CIS, CISD, ALDET, ORMAS, FSOCI, GENCI.
+Default: none""",
+            "values": ["CIS", "CISD", "ALDET", "ORMAS", "FSOCI", "GENCI"]
+        },
+        "MULT": {
+            "doc": """Spin multiplicity (2S+1).
+Default: 1 (singlet)""",
+            "values": ["1", "2", "3", "4", "5", "6"]
+        },
+        "ICHARG": {
+            "doc": """Molecular charge.
+Default: 0 (neutral)""",
+            "values": []
+        },
+        "MAXIT": {
+            "doc": """Maximum SCF iterations.
+Default: 30""",
+            "values": []
+        },
+        "COORD": {
+            "doc": """Coordinate system.
+Values: UNIQUE, HINT, CART, FRAGONLY.
+Default: UNIQUE""",
+            "values": ["UNIQUE", "HINT", "CART", "FRAGONLY"]
+        },
+        "UNITS": {
+            "doc": """Units for geometry.
+Values: ANGS (Angstroms), BOHR.
+Default: ANGS""",
+            "values": ["ANGS", "BOHR"]
+        },
+        "ISPHER": {
+            "doc": """Spherical harmonic basis functions.
+Values: -1 (all Cartesian), 0 (as input), 1 (all spherical).
+Default: 0""",
+            "values": ["-1", "0", "1"]
+        },
+        "NOSYM": {
+            "doc": """Disable symmetry.
+Values: .TRUE. (no symmetry), .FALSE. (use symmetry).
+Default: .FALSE.""",
+            "values": [".TRUE.", ".FALSE.", "1", "0"]
+        },
+        "EXETYP": {
+            "doc": """Execution type.
+Values: RUN (normal run), CHECK (input check only).
+Default: RUN""",
+            "values": ["RUN", "CHECK"]
+        },
+        "INTTYP": {
+            "doc": """Integral evaluation type.
+Values: POPLE, HONDO, ERIC, ARI.
+Default: POPLE""",
+            "values": ["POPLE", "HONDO", "ERIC", "ARI"]
+        },
+    },
+    "SYSTEM": {
+        "MWORDS": {
+            "doc": """Memory in million words (8 bytes each).
+Default: 1""",
+            "values": []
+        },
+        "MEMDDI": {
+            "doc": """Memory for distributed data (in words).
+Default: 0""",
+            "values": []
+        },
+        "TIMLIM": {
+            "doc": """Time limit in minutes.
+Default: 10000""",
+            "values": []
+        },
+    },
+    "BASIS": {
+        "GBASIS": {
+            "doc": """Gaussian basis set name.
+Values: MINI, MIDI, STO, N21, N31, N311, D95, D95V, CC-PVDZ, CC-PVTZ,
+        CC-PVQZ, CC-PV5Z, CC-PV6Z, AUG-CC-PVDZ, etc.""",
+            "values": ["MINI", "MIDI", "STO", "N21", "N31", "N311", "D95", "D95V",
+                      "CC-PVDZ", "CC-PVTZ", "CC-PVQZ", "CC-PV5Z", "AUG-CC-PVDZ"]
+        },
+        "NGAUSS": {
+            "doc": """Number of Gaussian primitives (for Pople basis sets).
+Values: 2, 3, 4, 5, 6""",
+            "values": ["2", "3", "4", "5", "6"]
+        },
+        "NDFUNC": {
+            "doc": """Number of d functions on heavy atoms.
+Default: 0""",
+            "values": []
+        },
+        "NFFUNC": {
+            "doc": """Number of f functions on heavy atoms.
+Default: 0""",
+            "values": []
+        },
+        "DIFFSP": {
+            "doc": """Add diffuse functions on heavy atoms.
+Values: .TRUE., .FALSE.
+Default: .FALSE.""",
+            "values": [".TRUE.", ".FALSE.", "1", "0"]
+        },
+        "DIFFS": {
+            "doc": """Add diffuse functions on hydrogens.
+Values: .TRUE., .FALSE.
+Default: .FALSE.""",
+            "values": [".TRUE.", ".FALSE.", "1", "0"]
+        },
+    },
+    "SCF": {
+        "DIRSCF": {
+            "doc": """Direct SCF (recompute integrals).
+Values: .TRUE., .FALSE.
+Default: .FALSE.""",
+            "values": [".TRUE.", ".FALSE.", "1", "0"]
+        },
+        "DIIS": {
+            "doc": """Use DIIS convergence acceleration.
+Values: .TRUE., .FALSE.
+Default: .TRUE.""",
+            "values": [".TRUE.", ".FALSE.", "1", "0"]
+        },
+        "SOSCF": {
+            "doc": """Use SOSCF (second-order SCF).
+Values: .TRUE., .FALSE.
+Default: .FALSE.""",
+            "values": [".TRUE.", ".FALSE.", "1", "0"]
+        },
+        "CONV": {
+            "doc": """SCF convergence criterion (energy change).
+Default: 1.0E-05""",
+            "values": []
+        },
+        "ETHRSH": {
+            "doc": """Energy threshold for integral screening.
+Default: 0.5""",
+            "values": []
+        },
+    },
+    "DFT": {
+        "METHOD": {
+            "doc": """DFT grid method.
+Values: GRID, GRIDFREE.
+Default: GRID""",
+            "values": ["GRID", "GRIDFREE"]
+        },
+        "NRAD": {
+            "doc": """Number of radial grid points.
+Default: 96""",
+            "values": []
+        },
+        "NLEB": {
+            "doc": """Number of Lebedev angular points.
+Values: 302, 434, 590, 770, 974, 1202, 1454, 1730, 2030, 2354, 2702, 3074, 3470, 3890.
+Default: 302""",
+            "values": ["302", "434", "590", "770", "974", "1202", "1454", "1730", 
+                      "2030", "2354", "2702", "3074", "3470", "3890"]
+        },
+        "DFTTHR": {
+            "doc": """DFT grid pruning threshold.
+Default: 1.0E-11""",
+            "values": []
+        },
+    },
+    "STATPT": {
+        "METHOD": {
+            "doc": """Optimization method.
+Values: RFO (Rational Function Optimization), QA (Quadratic Approximation),
+        GDIIS, CONOPT, SCHLEGEL, EF.
+Default: RFO""",
+            "values": ["RFO", "QA", "GDIIS", "CONOPT", "SCHLEGEL", "EF"]
+        },
+        "OPTTOL": {
+            "doc": """Geometry convergence tolerance (max gradient).
+Default: 0.0001""",
+            "values": []
+        },
+        "NSTEP": {
+            "doc": """Maximum number of optimization steps.
+Default: 50""",
+            "values": []
+        },
+        "HESS": {
+            "doc": """Hessian for optimization.
+Values: READ, CALC, GUESS.
+Default: GUESS""",
+            "values": ["READ", "CALC", "GUESS"]
+        },
+        "HSSEND": {
+            "doc": """Calculate Hessian at optimized geometry.
+Values: .TRUE., .FALSE.
+Default: .FALSE.""",
+            "values": [".TRUE.", ".FALSE.", "1", "0"]
+        },
+        "IFOLOW": {
+            "doc": """Follow Hessian mode (for saddle points).
+Default: 0""",
+            "values": []
+        },
+    },
+    "FORCE": {
+        "METHOD": {
+            "doc": """Method for force constants.
+Values: SEMIANALYTIC, ANALYTIC, FULLYNUMERIC, FULLNUM.
+Default: ANALYTIC""",
+            "values": ["SEMIANALYTIC", "ANALYTIC", "FULLYNUMERIC", "FULLNUM"]
+        },
+        "VIBANL": {
+            "doc": """Perform vibrational analysis.
+Values: .TRUE., .FALSE.
+Default: .TRUE.""",
+            "values": [".TRUE.", ".FALSE.", "1", "0"]
+        },
+        "PURIFY": {
+            "doc": """Purify rotations/translations from vibrations.
+Values: .TRUE., .FALSE.
+Default: .TRUE.""",
+            "values": [".TRUE.", ".FALSE.", "1", "0"]
+        },
+        "TEMP": {
+            "doc": """Temperature for thermochemistry (K).
+Default: 298.15""",
+            "values": []
+        },
+        "PRES": {
+            "doc": """Pressure for thermochemistry (atm).
+Default: 1.0""",
+            "values": []
+        },
+        "PROJCT": {
+            "doc": """Project out rotations/translations.
+Values: .TRUE., .FALSE.
+Default: .TRUE.""",
+            "values": [".TRUE.", ".FALSE.", "1", "0"]
+        },
+    },
+}

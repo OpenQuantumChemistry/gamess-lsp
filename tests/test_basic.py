@@ -1,15 +1,16 @@
-\"\"\"
+"""
 Basic tests for gamess-lsp
-\"\"\"
+"""
 
 import pytest
+from gamess_lsp import __version__
 
 
 def test_import():
-    \"\"\"Test that the package can be imported\"\"\"
-    assert True
+    """Test that the package can be imported."""
+    assert __version__ == "0.1.0"
 
 
-def test_placeholder():
-    \"\"\"Placeholder test - replace with actual tests\"\"\"
-    assert True
+def test_version():
+    """Test version is correct."""
+    assert __version__ == "0.1.0"
