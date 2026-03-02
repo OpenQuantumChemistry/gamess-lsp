@@ -582,3 +582,315 @@ for group, keywords in ADDITIONAL_KEYWORDS.items():
         GAMESS_KEYWORDS[group].update(keywords)
     else:
         GAMESS_KEYWORDS[group] = keywords
+
+# Additional keywords for commonly used groups missing definitions
+MORE_KEYWORDS = {
+    "GUESS": {
+        "GUESS": {
+            "doc": """Type of initial guess.
+Values: HUCKEL, CORE, MOREAD, SKIP, DENSITY, HCORE, NORNDM, DAMP, etc.
+Default: HUCKEL""",
+            "values": ["HUCKEL", "CORE", "MOREAD", "SKIP", "DENSITY", "HCORE", "NORNDM", "DAMP"]
+        },
+        "NORB": {
+            "doc": """Number of orbitals to read for MOREAD guess.
+Default: 0 (all)""",
+            "values": []
+        },
+        "PRTMO": {
+            "doc": """Print MOs in initial guess.
+Values: .TRUE., .FALSE.
+Default: .FALSE.""",
+            "values": [".TRUE.", ".FALSE.", "1", "0"]
+        },
+        "MIX": {
+            "doc": """Mix HOMO and LUMO for broken symmetry.
+Values: .TRUE., .FALSE.
+Default: .FALSE.""",
+            "values": [".TRUE.", ".FALSE.", "1", "0"]
+        },
+    },
+    "CIS": {
+        "NSTATE": {
+            "doc": """Number of excited states to compute.
+Default: 1""",
+            "values": []
+        },
+        "IROOT": {
+            "doc": """State of interest for properties.
+Default: 1""",
+            "values": []
+        },
+        "MULT": {
+            "doc": """Multiplicity of excited states.
+Default: same as ground state""",
+            "values": ["1", "3", "SINGLET", "TRIPLET"]
+        },
+        "DIAG": {
+            "doc": """Diagonalization method.
+Values: FULL, DAVIDSON.
+Default: DAVIDSON""",
+            "values": ["FULL", "DAVIDSON"]
+        },
+    },
+    "TDDFT": {
+        "NSTATE": {
+            "doc": """Number of excited states to compute.
+Default: 1""",
+            "values": []
+        },
+        "IROOT": {
+            "doc": """State of interest for properties.
+Default: 1""",
+            "values": []
+        },
+        "MULT": {
+            "doc": """Multiplicity of excited states.
+Default: same as ground state""",
+            "values": ["1", "3", "SINGLET", "TRIPLET"]
+        },
+        "MAXVEC": {
+            "doc": """Maximum number of expansion vectors.
+Default: 100""",
+            "values": []
+        },
+        "CVG": {
+            "doc": """Convergence criterion for excitation energies.
+Default: 1.0E-05""",
+            "values": []
+        },
+    },
+    "HESSIAN": {
+        "METHOD": {
+            "doc": """Method for computing Hessian.
+Values: ANALYTIC, SEMIANALYTIC, FULLYANALYTIC, NUMERIC.
+Default: ANALYTIC""",
+            "values": ["ANALYTIC", "SEMIANALYTIC", "FULLYANALYTIC", "NUMERIC"]
+        },
+        "PRTIFC": {
+            "doc": """Print internal force constants.
+Values: .TRUE., .FALSE.
+Default: .FALSE.""",
+            "values": [".TRUE.", ".FALSE.", "1", "0"]
+        },
+        "VIBANL": {
+            "doc": """Perform vibrational analysis.
+Values: .TRUE., .FALSE.
+Default: .TRUE.""",
+            "values": [".TRUE.", ".FALSE.", "1", "0"]
+        },
+    },
+    "IRC": {
+        "METHOD": {
+            "doc": """IRC following method.
+Values: RFO, TRUST, EULER, LQA.
+Default: RFO""",
+            "values": ["RFO", "TRUST", "EULER", "LQA"]
+        },
+        "FORWRD": {
+            "doc": """Follow IRC forward from saddle point.
+Values: .TRUE., .FALSE.
+Default: .TRUE.""",
+            "values": [".TRUE.", ".FALSE.", "1", "0"]
+        },
+        "NPOINT": {
+            "doc": """Number of IRC points to compute.
+Default: 100""",
+            "values": []
+        },
+        "STRIDE": {
+            "doc": """IRC step size (in amu^(1/2) * Bohr).
+Default: 0.1""",
+            "values": []
+        },
+    },
+    "ECP": {
+        "ECP": {
+            "doc": """Effective Core Potential type.
+Values: READ, SBKJC, HW, LANL2DZ.
+Default: READ""",
+            "values": ["READ", "SBKJC", "HW", "LANL2D2", "LANL2DZ"]
+        },
+        "PTRAD": {
+            "doc": """Print ECP radial potentials.
+Values: .TRUE., .FALSE.
+Default: .FALSE.""",
+            "values": [".TRUE.", ".FALSE.", "1", "0"]
+        },
+    },
+    "PCM": {
+        "SOLVNT": {
+            "doc": """Solvent name.
+Values: WATER, CH2CL2, THF, ACETONE, ETC.
+Default: WATER""",
+            "values": ["WATER", "CH2CL2", "THF", "ACETONE", "DMSO", "DMF", "ACETONITRILE", "METHANOL", "ETHANOL"]
+        },
+        "ICAV": {
+            "doc": """Cavity type.
+Values: 0 (GePol), 1 (UFF), 2 (Pierotti).
+Default: 0""",
+            "values": ["0", "1", "2"]
+        },
+        "EPS": {
+            "doc": """Dielectric constant (overrides solvent).
+Default: from solvent""",
+            "values": []
+        },
+        "RSOLV": {
+            "doc": """Probe radius (Angstroms).
+Default: 1.0 (water)""",
+            "values": []
+        },
+    },
+    "COSM": {
+        "EPS": {
+            "doc": """Dielectric constant.
+Default: infinity (conductor)""",
+            "values": []
+        },
+        "RSOLV": {
+            "doc": """Probe radius (Angstroms).
+Default: 1.3""",
+            "values": []
+        },
+        "DISPT": {
+            "doc": """Dispersion correction type.
+Values: 0 (none), 1 (DFT-D3).
+Default: 0""",
+            "values": ["0", "1"]
+        },
+    },
+    "MCSCF": {
+        "CISTEP": {
+            "doc": """CI step method.
+Values: FULLNR, ALDET, ORMAS, GENCI, FSOCI.
+Default: FULLNR""",
+            "values": ["FULLNR", "ALDET", "ORMAS", "GENCI", "FSOCI"]
+        },
+        "MAXIT": {
+            "doc": """Maximum MCSCF iterations.
+Default: 100""",
+            "values": []
+        },
+        "ACURCY": {
+            "doc": """MCSCF convergence criterion.
+Default: 1.0E-05""",
+            "values": []
+        },
+        "FULLNR": {
+            "doc": """Use full NR method (for small active spaces).
+Values: .TRUE., .FALSE.
+Default: .FALSE.""",
+            "values": [".TRUE.", ".FALSE.", "1", "0"]
+        },
+    },
+    "VIB": {
+        "SCLFAC": {
+            "doc": """Scale factor for frequencies.
+Default: 1.0""",
+            "values": []
+        },
+        "MODES": {
+            "doc": """Modes to print/analyze.
+Default: ALL""",
+            "values": ["ALL"]
+        },
+    },
+    "DRC": {
+        "TINIT": {
+            "doc": """Initial temperature (K).
+Default: 298.15""",
+            "values": []
+        },
+        "NSTEP": {
+            "doc": """Maximum number of DRC steps.
+Default: 1000""",
+            "values": []
+        },
+        "DELTAT": {
+            "doc": """Time step (femtoseconds).
+Default: 0.5""",
+            "values": []
+        },
+    },
+    "SURFACE": {
+        "NVIB": {
+            "doc": """Number of vibrational modes.
+Required for surface scan.""",
+            "values": []
+        },
+        "NSURF": {
+            "doc": """Number of surface points.
+Default: 10""",
+            "values": []
+        },
+        "IVEC": {
+            "doc": """Vibrational mode to follow.
+Default: 1""",
+            "values": []
+        },
+    },
+    "NBO": {
+        "NBO": {
+            "doc": """NBO analysis level.
+Values: NONE, DENSITY, POPULATION, FULL.
+Default: NONE""",
+            "values": ["NONE", "DENSITY", "POPULATION", "FULL"]
+        },
+        "NPA": {
+            "doc": """Natural Population Analysis.
+Values: .TRUE., .FALSE.
+Default: .FALSE.""",
+            "values": [".TRUE.", ".FALSE.", "1", "0"]
+        },
+        "NBOKEY": {
+            "doc": """NBO keylist commands.
+See NBO manual for options.""",
+            "values": []
+        },
+    },
+    "SMD": {
+        "SOLVNT": {
+            "doc": """Solvent name for SMD.
+Values: WATER, ETHANOL, HEXANE, BENZENE, ETC.
+Default: WATER""",
+            "values": ["WATER", "ETHANOL", "HEXANE", "BENZENE", "TOLUENE", "CH2CL2", "THF", "ACETONE"]
+        },
+        "ICAV": {
+            "doc": """Cavity type.
+Values: 0 (SMD), 1 (custom).
+Default: 0""",
+            "values": ["0", "1"]
+        },
+    },
+    "CI": {
+        "CITYP": {
+            "doc": """CI calculation type.
+Values: CIS, CISD, ALDET, ORMAS, FSOCI, GENCI.
+Default: CIS""",
+            "values": ["CIS", "CISD", "ALDET", "ORMAS", "FSOCI", "GENCI"]
+        },
+        "NFZC": {
+            "doc": """Number of frozen core orbitals.
+Default: 0""",
+            "values": []
+        },
+        "NDOC": {
+            "doc": """Number of doubly occupied orbitals in active space.
+Required for ALDET/ORMAS.""",
+            "values": []
+        },
+        "NALP": {
+            "doc": """Number of active orbitals (ALDET/ORMAS).
+Required for ALDET/ORMAS.""",
+            "values": []
+        },
+    },
+}
+
+# Update with the new keywords
+for group, keywords in MORE_KEYWORDS.items():
+    if group in GAMESS_KEYWORDS:
+        GAMESS_KEYWORDS[group].update(keywords)
+    else:
+        GAMESS_KEYWORDS[group] = keywords

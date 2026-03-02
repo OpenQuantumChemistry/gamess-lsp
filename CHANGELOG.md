@@ -49,14 +49,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Planned
-- Signature help for keywords
-- Code actions for quick fixes
-- Rename support for keywords
-- Workspace symbols support
-- Better error recovery in parser
-- More comprehensive keyword database
-- Support for GAMESS-US specific extensions
+### Added
+- **Enhanced Keywords Database**:
+  - Added keyword definitions for 15 additional GAMESS groups
+  - New groups with keywords: GUESS, CIS, TDDFT, HESSIAN, IRC, ECP, PCM, COSM, MCSCF, VIB, DRC, SURFACE, NBO, SMD, CI
+  - Total keyword groups: 24 (up from 9)
+  - Total documented keywords: 118 (up from 68)
+  - Added comprehensive documentation for each keyword with allowed values
+
+- **Additional Tests**:
+  - Added 7 new tests for the new keyword groups
+  - Total test count: 67 (up from 60)
+  - All tests passing with 100% success rate
+
+### Changed
+- Improved LSP completion support for newly added groups
+- Enhanced hover documentation coverage
 
 [0.1.0]: https://github.com/newtontech/gamess-lsp/releases/tag/v0.1.0
 [Unreleased]: https://github.com/newtontech/gamess-lsp/compare/v0.1.0...HEAD

@@ -125,3 +125,53 @@ class TestGAMESSKeywords:
         force = GAMESS_KEYWORDS["FORCE"]
         assert "VIBANL" in force
         assert "TEMP" in force
+
+
+    def test_guess_keywords(self):
+        """Test GUESS keywords exist."""
+        assert "GUESS" in GAMESS_KEYWORDS
+        guess = GAMESS_KEYWORDS["GUESS"]
+        assert "GUESS" in guess
+        assert "MIX" in guess
+
+    def test_cis_keywords(self):
+        """Test CIS keywords exist."""
+        assert "CIS" in GAMESS_KEYWORDS
+        cis = GAMESS_KEYWORDS["CIS"]
+        assert "NSTATE" in cis
+        assert "MULT" in cis
+
+    def test_tddft_keywords(self):
+        """Test TDDFT keywords exist."""
+        assert "TDDFT" in GAMESS_KEYWORDS
+        tddft = GAMESS_KEYWORDS["TDDFT"]
+        assert "NSTATE" in tddft
+        assert "MAXVEC" in tddft
+
+    def test_pcm_keywords(self):
+        """Test PCM keywords exist."""
+        assert "PCM" in GAMESS_KEYWORDS
+        pcm = GAMESS_KEYWORDS["PCM"]
+        assert "SOLVNT" in pcm
+        assert "EPS" in pcm
+
+    def test_mcscf_keywords(self):
+        """Test MCSCF keywords exist."""
+        assert "MCSCF" in GAMESS_KEYWORDS
+        mcscf = GAMESS_KEYWORDS["MCSCF"]
+        assert "CISTEP" in mcscf
+        assert "MAXIT" in mcscf
+
+    def test_irc_keywords(self):
+        """Test IRC keywords exist."""
+        assert "IRC" in GAMESS_KEYWORDS
+        irc = GAMESS_KEYWORDS["IRC"]
+        assert "METHOD" in irc
+        assert "NPOINT" in irc
+
+    def test_nbo_keywords(self):
+        """Test NBO keywords exist."""
+        assert "NBO" in GAMESS_KEYWORDS
+        nbo = GAMESS_KEYWORDS["NBO"]
+        assert "NBO" in nbo
+        assert "NPA" in nbo
