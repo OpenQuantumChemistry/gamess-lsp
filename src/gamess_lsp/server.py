@@ -26,7 +26,9 @@ from lsprotocol.types import (
     Range,
     RenameParams,
     SymbolInformation,
+    OptionalVersionedTextDocumentIdentifier,
     SymbolKind,
+    TextDocumentEdit,
     TextEdit,
     WorkspaceEdit,
 )
@@ -430,12 +432,12 @@ def code_action(params: CodeActionParams) -> List[CodeAction]:
                     kind=CodeActionKind.QuickFix,
                     edit=WorkspaceEdit(
                         document_changes=[
-                            {
-                                "textDocument": {
-                                    "uri": params.text_document.uri,
-                                    "version": doc.version,
-                                },
-                                "edits": [
+                            TextDocumentEdit(
+                                text_document=OptionalVersionedTextDocumentIdentifier(
+                                    uri=params.text_document.uri,
+                                    version=doc.version,
+                                ),
+                                edits=[
                                     TextEdit(
                                         range=Range(
                                             start=Position(line=line_num, character=len(line)),
@@ -444,7 +446,7 @@ def code_action(params: CodeActionParams) -> List[CodeAction]:
                                         new_text="\n$END",
                                     )
                                 ],
-                            }
+                            )
                         ]
                     ),
                 )
