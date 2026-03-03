@@ -8,6 +8,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Code Actions (Quick Fixes)**:
+  - `Add missing \$END`: Automatically adds \$END for unclosed groups
+  - `Change to \$GROUP`: Suggests similar valid group names for unknown groups
+  - `Add RUNTYP=ENERGY`: Adds required RUNTYP keyword to \$CONTRL group
+  
+- **Rename Support**:
+  - Rename group names across the document
+  - Rename keywords within their groups
+  - Smart word detection at cursor position
+
+- **Enhanced Testing**:
+  - Added 8 new tests for code actions and rename functionality
+  - Total test count: 75 tests, all passing
+  - 100% test coverage maintained
+
+### Changed
+- Updated server.py with code action and rename providers
+
+## [0.1.1] - 2026-03-03
+
+### Added
 - **Code Quality Improvements**:
   - Added .flake8 configuration file with 100 character line length
   - Configured to work with black formatter settings

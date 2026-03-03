@@ -2,9 +2,13 @@
 
 import logging
 import re
+from difflib import get_close_matches
 from typing import Any, List, Optional
 
 from lsprotocol.types import (
+    CodeAction,
+    CodeActionKind,
+    CodeActionParams,
     CompletionItem,
     CompletionItemKind,
     CompletionList,
@@ -20,9 +24,11 @@ from lsprotocol.types import (
     Location,
     Position,
     Range,
+    RenameParams,
     SymbolInformation,
     SymbolKind,
     TextEdit,
+    WorkspaceEdit,
 )
 from pygls.server import LanguageServer
 from pygls.workspace import Document
@@ -392,6 +398,187 @@ def document_symbol(params: DocumentSymbolParams) -> List[SymbolInformation]:
             symbols.append(kw_symbol)
 
     return symbols
+
+
+@server.feature("textDocument/codeAction")
+def code_action(params: CodeActionParams) -> List[CodeAction]:
+    """Handle code action requests.
+
+    Provides quick fixes for common issues:
+    - Add missing $END for unclosed groups
+    - Fix unknown groups by suggesting similar valid group names
+    - Add required keywords for groups
+    """
+    doc = server.workspace.get_text_document(params.text_document.uri)
+    content = doc.source
+    line_num = params.range.start.line
+    line = doc.lines[line_num] if line_num < len(doc.lines) else ""
+
+    actions = []
+    parser = GAMESSParser()
+    parser.parse(content)
+
+    # Check for unclosed group warning on this line
+    for warning in parser.warnings:
+        if warning.get("line") == line_num + 1:
+            message = warning.get("message", "")
+
+            # Add $END for unclosed groups
+            if "not properly closed" in message:
+                action = CodeAction(
+                    title="Add missing $END",
+                    kind=CodeActionKind.QuickFix,
+                    edit=WorkspaceEdit(
+                        document_changes=[
+                            {
+                                "textDocument": {
+                                    "uri": params.text_document.uri,
+                                    "version": doc.version,
+                                },
+                                "edits": [
+                                    TextEdit(
+                                        range=Range(
+                                            start=Position(line=line_num, character=len(line)),
+                                            end=Position(line=line_num, character=len(line)),
+                                        ),
+                                        new_text="\n$END",
+                                    )
+                                ],
+                            }
+                        ]
+                    ),
+                )
+                actions.append(action)
+
+            # Suggest fix for unknown groups
+            if "Unknown group" in message:
+                unknown_group = message.split(": $")[-1].strip() if ": $" in message else ""
+                if unknown_group:
+                    suggestions = get_close_matches(
+                        unknown_group, GAMESS_GROUPS.keys(), n=3, cutoff=0.5
+                    )
+                    for suggestion in suggestions:
+                        action = CodeAction(
+                            title=f"Change to ${suggestion}",
+                            kind=CodeActionKind.QuickFix,
+                            edit=WorkspaceEdit(
+                                changes={
+                                    params.text_document.uri: [
+                                        TextEdit(
+                                            range=Range(
+                                                start=Position(line=line_num, character=0),
+                                                end=Position(line=line_num, character=len(line)),
+                                            ),
+                                            new_text=line.replace(
+                                                f"${unknown_group}", f"${suggestion}"
+                                            ),
+                                        )
+                                    ]
+                                }
+                            ),
+                        )
+                        actions.append(action)
+
+    # Check if we're in a group that needs required keywords
+    current_group = parser.get_group_at_position(content, line_num + 1)
+    if current_group == "CONTRL":
+        parsed = parser.parse(content)
+        contrl_group = parsed.get_group("CONTRL")
+        if contrl_group and "RUNTYP" not in contrl_group.keywords:
+            action = CodeAction(
+                title="Add RUNTYP=ENERGY to $CONTRL",
+                kind=CodeActionKind.QuickFix,
+                edit=WorkspaceEdit(
+                    changes={
+                        params.text_document.uri: [
+                            TextEdit(
+                                range=Range(
+                                    start=Position(line=line_num, character=len(line.rstrip())),
+                                    end=Position(line=line_num, character=len(line.rstrip())),
+                                ),
+                                new_text=" RUNTYP=ENERGY",
+                            )
+                        ]
+                    }
+                ),
+            )
+            actions.append(action)
+
+    return actions
+
+
+@server.feature("textDocument/rename")
+def rename(params: RenameParams) -> Optional[WorkspaceEdit]:
+    """Handle rename requests.
+
+    Allows renaming:
+    - Group names
+    - Keywords within groups
+    """
+    doc = server.workspace.get_text_document(params.text_document.uri)
+    content = doc.source
+    position = params.position
+    new_name = params.new_name
+
+    line = doc.lines[position.line]
+    word = _get_word_at_position(line, position.character)
+
+    if not word:
+        return None
+
+    word_upper = word.upper()
+    parser = GAMESSParser()
+    parsed = parser.parse(content)
+
+    # Check if renaming a group
+    if word_upper in GAMESS_GROUPS or word_upper.startswith("$"):
+        group_name = word_upper.lstrip("$")
+        if group_name in parsed.groups:
+            # Find all occurrences of this group
+            changes = []
+            lines = content.split("\n")
+            for i, line_content in enumerate(lines):
+                # Match group start
+                match = re.match(rf"^\s*\$({group_name})\b", line_content, re.IGNORECASE)
+                if match:
+                    start_char = line_content.find(f"${group_name}")
+                    if start_char == -1:
+                        start_char = line_content.upper().find(f"${group_name}")
+                    changes.append(
+                        TextEdit(
+                            range=Range(
+                                start=Position(line=i, character=start_char + 1),
+                                end=Position(line=i, character=start_char + 1 + len(group_name)),
+                            ),
+                            new_text=new_name.lstrip("$"),
+                        )
+                    )
+
+            if changes:
+                return WorkspaceEdit(changes={params.text_document.uri: changes})
+
+    # Check if renaming a keyword
+    current_group = parser.get_group_at_position(content, position.line + 1)
+    if current_group:
+        group = parsed.get_group(current_group)
+        if group and word_upper in group.keywords:
+            # Find and rename this keyword
+            keyword = group.keywords[word_upper]
+            return WorkspaceEdit(
+                changes={
+                    params.text_document.uri: [
+                        TextEdit(
+                            range=Range(
+                                start=Position(line=keyword.line_number - 1, character=0),
+                                end=Position(line=keyword.line_number - 1, character=100),
+                            ),
+                            new_text=line.replace(word, new_name, 1),
+                        )
+                    ]
+                }
+            )
+
+    return None
 
 
 def main() -> None:
