@@ -26,6 +26,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Updated server.py with code action and rename providers
 
+### Fixed
+- **Type Safety**: Resolved MyPy type error in codeAction handler
+  - Fixed WorkspaceEdit document_changes to use proper LSP types
+  - Added proper imports for TextDocumentEdit and OptionalVersionedTextDocumentIdentifier
+- Updated server.py with code action and rename providers
+
 ## [0.1.1] - 2026-03-03
 
 ### Added
@@ -39,6 +45,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - All 67 tests passing with comprehensive coverage
 
 ### Changed
+- Updated server.py with code action and rename providers
+
+### Fixed
+- **Type Safety**: Resolved MyPy type error in codeAction handler
+  - Fixed WorkspaceEdit document_changes to use proper LSP types
+  - Added proper imports for TextDocumentEdit and OptionalVersionedTextDocumentIdentifier
 - Updated code quality workflow documentation
 
 ## [0.1.0] - 2026-03-02
@@ -78,6 +90,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - API documentation in code
 
 ### Changed
+- Updated server.py with code action and rename providers
+
+### Fixed
+- **Type Safety**: Resolved MyPy type error in codeAction handler
+  - Fixed WorkspaceEdit document_changes to use proper LSP types
+  - Added proper imports for TextDocumentEdit and OptionalVersionedTextDocumentIdentifier
 - N/A (initial release)
 
 ### Fixed
