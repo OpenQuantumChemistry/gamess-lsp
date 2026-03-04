@@ -564,9 +564,9 @@ def definition(params: DefinitionParams) -> Optional[List[Location]]:
 
     current_group = parser.get_group_at_position(content, position.line + 1)
     if current_group:
-        group = parsed.get_group(current_group)
-        if group and word_upper in group.keywords:
-            keyword = group.keywords[word_upper]
+        current_group_obj = parsed.get_group(current_group)
+        if current_group_obj and word_upper in current_group_obj.keywords:
+            keyword = current_group_obj.keywords[word_upper]
             locations.append(
                 Location(
                     uri=params.text_document.uri,
@@ -765,9 +765,9 @@ def rename(params: RenameParams) -> Optional[WorkspaceEdit]:
 
     current_group = parser.get_group_at_position(content, position.line + 1)
     if current_group:
-        group = parsed.get_group(current_group)
-        if group and word_upper in group.keywords:
-            keyword = group.keywords[word_upper]
+        current_group_obj = parsed.get_group(current_group)
+        if current_group_obj and word_upper in current_group_obj.keywords:
+            keyword = current_group_obj.keywords[word_upper]
             return WorkspaceEdit(
                 changes={
                     params.text_document.uri: [
