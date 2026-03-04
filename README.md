@@ -9,10 +9,14 @@ Language Server Protocol implementation for GAMESS (US) input files (.inp).
 
 - **Syntax Validation**: Real-time validation of GAMESS input files with warnings for unknown groups and unclosed sections
 - **Auto-completion**: Intelligent completion for \$ groups and keywords, including value suggestions after `=`
+- **Snippet Completions**: Quick-insert templates for common GAMESS calculations (water molecule, DFT optimization, MP2, frequency, TD-DFT, etc.)
 - **Hover Documentation**: Inline documentation for GAMESS keywords and groups
 - **Diagnostics**: Warnings for unknown groups, unclosed sections, and syntax issues
 - **Document Formatting**: Automatic formatting with consistent indentation
 - **Document Symbols**: Navigation support for \$ groups and keywords
+- **Go to Definition**: Navigate to group or keyword definitions
+- **Find References**: Find all occurrences of groups or keywords
+- **Workspace Symbols**: Search for symbols across all open GAMESS files
 - **Code Actions**: Quick fixes for common issues:
   - Add missing \$END for unclosed groups
   - Suggest corrections for unknown groups
@@ -107,6 +111,18 @@ H     1.0   0.000000   0.757210  -0.469957
 - Type `\$` to see all available groups
 - Inside a group, type to see available keywords
 - After `=`, see allowed values for the keyword
+- Type at the start of a line to see snippet completions for common templates
+
+### Snippet Templates
+
+The following snippet templates are available (press Tab to navigate placeholders):
+
+- **Water molecule**: Complete water molecule with DFT optimization
+- **DFT optimization**: Standard DFT geometry optimization template
+- **HF single point**: Hartree-Fock single point energy calculation
+- **MP2 calculation**: MP2 correlation energy calculation
+- **Frequency calculation**: Vibrational frequency calculation
+- **TD-DFT**: Time-dependent DFT excited states calculation
 
 ### Hover
 
@@ -118,6 +134,22 @@ Type of SCF wavefunction.
 Values: RHF, UHF, ROHF, MCSCF, NONE.
 Default: RHF
 ```
+
+### Go to Definition
+
+- Click on a group name (e.g., `\$CONTRL`) to navigate to its definition
+- Click on a keyword to navigate to where it's defined in the current group
+
+### Find References
+
+- Right-click on a group or keyword and select "Find All References"
+- See all locations where the group or keyword is used in the document
+
+### Workspace Symbols
+
+- Search across all open GAMESS files for groups and keywords
+- Use your editor's symbol search feature (Ctrl+Shift+O in VS Code)
+- Filter by group or keyword names
 
 ### Diagnostics
 
@@ -232,8 +264,3 @@ MIT License - see [LICENSE](LICENSE) for details.
 - [GAMESS (US) Documentation](https://www.msg.chem.iastate.edu/gamess/documentation.html)
 - [Language Server Protocol Specification](https://microsoft.github.io/language-server-protocol/)
 - [pygls - Python LSP Library](https://github.com/openlawlibrary/pygls)
-
-## Acknowledgments
-
-- The GAMESS development team at Iowa State University
-- The pygls team for the excellent LSP library

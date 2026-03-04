@@ -13,6 +13,7 @@ from lsprotocol.types import (
     CompletionItemKind,
     CompletionList,
     CompletionParams,
+    DefinitionParams,
     Diagnostic,
     DiagnosticSeverity,
     DidChangeTextDocumentParams,
@@ -24,6 +25,7 @@ from lsprotocol.types import (
     Location,
     Position,
     Range,
+    ReferenceParams,
     RenameParams,
     SymbolInformation,
     OptionalVersionedTextDocumentIdentifier,
@@ -31,6 +33,8 @@ from lsprotocol.types import (
     TextDocumentEdit,
     TextEdit,
     WorkspaceEdit,
+    WorkspaceSymbolParams,
+    InsertTextFormat,
 )
 from pygls.server import LanguageServer
 from pygls.workspace import Document
@@ -48,10 +52,105 @@ server = LanguageServer("gamess-lsp", "0.1.0")
 document_cache: dict = {}
 
 
+# GAMESS snippet templates
+GAMESS_SNIPPETS = {
+    "water": {
+        "label": "Water molecule",
+        "documentation": "Water molecule geometry with DFT optimization",
+        "insertText": """! Water molecule DFT calculation
+ \$CONTRL SCFTYP=RHF DFTTYP=B3LYP RUNTYP=OPTIMIZE \$END
+ \$SYSTEM MWORDS=100 \$END
+ \$BASIS GBASIS=CC-PVDZ \$END
+ \$STATPT OPTTOL=0.0001 NSTEP=50 \$END
+ \$DATA
+Water molecule
+Cnv 2
+
+O     8.0   0.000000   0.000000   0.117489
+H     1.0   0.000000   0.757210  -0.469957
+ \$END""",
+    },
+    "dft-opt": {
+        "label": "DFT optimization",
+        "documentation": "Standard DFT geometry optimization template",
+        "insertText": """! DFT geometry optimization
+ \$CONTRL SCFTYP=RHF DFTTYP=B3LYP RUNTYP=OPTIMIZE \$END
+ \$SYSTEM MWORDS=100 \$END
+ \$BASIS GBASIS=CC-PVDZ \$END
+ \$STATPT OPTTOL=0.0001 NSTEP=50 \$END
+ \$DATA
+\${1:Molecule title}
+\${2:C1}
+
+\${3:Atom}   \${4:Z}   \${5:x}   \${6:y}   \${7:z}
+ \$END""",
+    },
+    "hf-sp": {
+        "label": "Hartree-Fock single point",
+        "documentation": "Hartree-Fock single point energy calculation",
+        "insertText": """! HF single point energy
+ \$CONTRL SCFTYP=RHF RUNTYP=ENERGY \$END
+ \$SYSTEM MWORDS=100 \$END
+ \$BASIS GBASIS=STO NGAUSS=3 \$END
+ \$DATA
+\${1:Molecule title}
+\${2:C1}
+
+\${3:Atom}   \${4:Z}   \${5:x}   \${6:y}   \${7:z}
+ \$END""",
+    },
+    "mp2": {
+        "label": "MP2 calculation",
+        "documentation": "MP2 correlation energy calculation",
+        "insertText": """! MP2 calculation
+ \$CONTRL SCFTYP=RHF RUNTYP=ENERGY MPLEVL=2 \$END
+ \$SYSTEM MWORDS=100 \$END
+ \$BASIS GBASIS=CC-PVDZ \$END
+ \$MP2 METHOD=2 \$END
+ \$DATA
+\${1:Molecule title}
+\${2:C1}
+
+\${3:Atom}   \${4:Z}   \${5:x}   \${6:y}   \${7:z}
+ \$END""",
+    },
+    "freq": {
+        "label": "Frequency calculation",
+        "documentation": "Vibrational frequency calculation",
+        "insertText": """! Frequency calculation
+ \$CONTRL SCFTYP=RHF RUNTYP=HESSIAN \$END
+ \$SYSTEM MWORDS=100 \$END
+ \$BASIS GBASIS=CC-PVDZ \$END
+ \$FORCE METHOD=ANALYTIC \$END
+ \$DATA
+\${1:Molecule title}
+\${2:C1}
+
+\${3:Atom}   \${4:Z}   \${5:x}   \${6:y}   \${7:z}
+ \$END""",
+    },
+    "tddft": {
+        "label": "TD-DFT calculation",
+        "documentation": "Time-dependent DFT excited states calculation",
+        "insertText": """! TD-DFT excited states
+ \$CONTRL SCFTYP=RHF DFTTYP=B3LYP RUNTYP=ENERGY \$END
+ \$SYSTEM MWORDS=100 \$END
+ \$BASIS GBASIS=CC-PVDZ \$END
+ \$TDDFT NSTATE=5 MULT=1 \$END
+ \$DATA
+\${1:Molecule title}
+\${2:C1}
+
+\${3:Atom}   \${4:Z}   \${5:x}   \${6:y}   \${7:z}
+ \$END""",
+    },
+}
+
+
 def _get_diagnostics(content: str) -> List[Diagnostic]:
     """Get diagnostics for GAMESS input content."""
     parser = GAMESSParser()
-    parser.parse(content)  # Parse to populate diagnostics
+    parser.parse(content)
 
     diagnostics = []
     for item in parser.get_diagnostics():
@@ -99,13 +198,29 @@ def did_change(params: DidChangeTextDocumentParams) -> None:
 
 @server.feature("textDocument/completion")
 def completion(params: CompletionParams) -> CompletionList:
-    """Handle completion requests."""
+    """Handle completion requests including snippets."""
     doc = server.workspace.get_text_document(params.text_document.uri)
     content = doc.source
     line = doc.lines[params.position.line]
     line_before = line[: params.position.character]
 
     items = []
+
+    # Check for snippet triggers at start of line
+    stripped_line = line_before.strip()
+    if not stripped_line or stripped_line.startswith("!"):
+        # Add snippet completions
+        for snippet_id, snippet in GAMESS_SNIPPETS.items():
+            items.append(
+                CompletionItem(
+                    label=snippet["label"],
+                    kind=CompletionItemKind.Snippet,
+                    documentation=snippet["documentation"],
+                    insert_text=snippet["insertText"],
+                    insert_text_format=InsertTextFormat.Snippet,
+                    detail="GAMESS snippet",
+                )
+            )
 
     # Check if we're after an equals sign (value completion)
     if "=" in line_before:
@@ -114,7 +229,6 @@ def completion(params: CompletionParams) -> CompletionList:
             keyword_part = parts[0].strip().split()[-1].upper() if parts[0].strip() else ""
             value_prefix = parts[1].strip().upper()
 
-            # Find the current group
             parser = GAMESSParser()
             current_group = parser.get_group_at_position(content, params.position.line + 1)
 
@@ -151,7 +265,6 @@ def completion(params: CompletionParams) -> CompletionList:
                     )
                 )
 
-        # Check for keywords in current group
         parser = GAMESSParser()
         current_group = parser.get_group_at_position(content, params.position.line + 1)
 
@@ -167,7 +280,6 @@ def completion(params: CompletionParams) -> CompletionList:
                         )
                     )
     else:
-        # Suggest all groups
         for group_name, doc_text in GAMESS_GROUPS.items():
             items.append(
                 CompletionItem(
@@ -187,7 +299,6 @@ def hover(params: HoverParams) -> Optional[Hover]:
     doc = server.workspace.get_text_document(params.text_document.uri)
     position = params.position
 
-    # Get word at position
     line = doc.lines[position.line]
     word = _get_word_at_position(line, position.character)
 
@@ -196,11 +307,9 @@ def hover(params: HoverParams) -> Optional[Hover]:
 
     word_upper = word.upper()
 
-    # Check if it's a group
     if word_upper in GAMESS_GROUPS:
         return Hover(contents=GAMESS_GROUPS[word_upper])
 
-    # Check if it's a keyword in current group
     parser = GAMESSParser()
     current_group = parser.get_group_at_position(doc.source, position.line + 1)
 
@@ -217,7 +326,6 @@ def _get_word_at_position(line: str, character: int) -> str:
     if not line or character >= len(line):
         return ""
 
-    # Find word boundaries
     start = character
     while start > 0 and line[start - 1].isalnum():
         start -= 1
@@ -238,64 +346,48 @@ def diagnostic(params: Any) -> List[Diagnostic]:
 
 @server.feature("textDocument/formatting")
 def formatting(params: DocumentFormattingParams) -> List[TextEdit]:
-    """Handle document formatting requests.
-
-    Formats GAMESS input files with:
-    - Consistent indentation for group contents
-    - Standardized spacing around keywords
-    - $END on its own line
-    """
+    """Handle document formatting requests."""
     doc = server.workspace.get_text_document(params.text_document.uri)
     content = doc.source
     lines = content.split("\n")
 
     formatted_lines = []
     in_group = False
-    indent = "  "  # 2-space indentation
+    indent = "  "
 
     for line in lines:
         stripped = line.strip()
 
-        # Skip empty lines
         if not stripped:
             formatted_lines.append("")
             continue
 
-        # Handle comments
         if stripped.startswith("!"):
             formatted_lines.append(stripped)
             continue
 
-        # Check for group start
         if stripped.startswith("$") and not re.match(r"^\$END\b", stripped, re.IGNORECASE):
-            # Extract group name and any keywords on the same line
             match = re.match(r"^\$([A-Za-z_][A-Za-z0-9_]*)\s*(.*)", stripped)
             if match:
                 group_name = match.group(1).upper()
                 rest = match.group(2).strip()
 
                 if rest and not rest.startswith("$"):
-                    # Keywords on same line - format them
                     formatted_lines.append(f"${group_name}")
                     in_group = True
-                    # Format the keywords
                     keywords = _format_keywords(rest)
                     formatted_lines.append(f"{indent}{keywords}")
                 else:
                     formatted_lines.append(f"${group_name}")
                     in_group = True
 
-                    # Check if $END is on the same line
                     if rest.upper().startswith("$END"):
                         in_group = False
                         formatted_lines.append("$END")
-        # Check for $END
         elif re.match(r"^\$END\b", stripped, re.IGNORECASE):
             in_group = False
             formatted_lines.append("$END")
-        # Regular content line
         elif in_group:
-            # Format keywords if they contain =
             if "=" in stripped and not stripped.startswith("!"):
                 formatted_keywords = _format_keywords(stripped)
                 formatted_lines.append(f"{indent}{formatted_keywords}")
@@ -304,7 +396,6 @@ def formatting(params: DocumentFormattingParams) -> List[TextEdit]:
         else:
             formatted_lines.append(stripped)
 
-    # Create TextEdit for the entire document
     return [
         TextEdit(
             range=Range(
@@ -317,7 +408,6 @@ def formatting(params: DocumentFormattingParams) -> List[TextEdit]:
 
 def _format_keywords(line: str) -> str:
     """Format a line of keyword=value pairs."""
-    # Split by spaces but preserve quoted values
     tokens = []
     current = ""
     in_quotes = False
@@ -342,7 +432,6 @@ def _format_keywords(line: str) -> str:
     if current:
         tokens.append(current)
 
-    # Format each token
     formatted_tokens = []
     for token in tokens:
         if "=" in token:
@@ -356,10 +445,7 @@ def _format_keywords(line: str) -> str:
 
 @server.feature("textDocument/documentSymbol")
 def document_symbol(params: DocumentSymbolParams) -> List[SymbolInformation]:
-    """Handle document symbol requests.
-
-    Returns all $GROUP sections as symbols for navigation.
-    """
+    """Handle document symbol requests."""
     doc = server.workspace.get_text_document(params.text_document.uri)
     content = doc.source
 
@@ -369,7 +455,6 @@ def document_symbol(params: DocumentSymbolParams) -> List[SymbolInformation]:
     parsed = parser.parse(content)
 
     for group_name, group in parsed.groups.items():
-        # Create symbol for each group
         symbol = SymbolInformation(
             name=f"${group_name}",
             kind=SymbolKind.Class,
@@ -383,7 +468,6 @@ def document_symbol(params: DocumentSymbolParams) -> List[SymbolInformation]:
         )
         symbols.append(symbol)
 
-        # Create symbols for each keyword in the group
         for keyword_name, keyword in group.keywords.items():
             kw_symbol = SymbolInformation(
                 name=keyword_name,
@@ -402,15 +486,147 @@ def document_symbol(params: DocumentSymbolParams) -> List[SymbolInformation]:
     return symbols
 
 
+@server.feature("workspace/symbol")
+def workspace_symbol(params: WorkspaceSymbolParams) -> List[SymbolInformation]:
+    """Handle workspace symbol requests."""
+    query = params.query.upper() if params.query else ""
+    symbols: List[SymbolInformation] = []
+
+    for uri, content in document_cache.items():
+        parser = GAMESSParser()
+        parsed = parser.parse(content)
+
+        for group_name, group in parsed.groups.items():
+            if not query or query in group_name:
+                symbol = SymbolInformation(
+                    name=f"${group_name}",
+                    kind=SymbolKind.Class,
+                    location=Location(
+                        uri=uri,
+                        range=Range(
+                            start=Position(line=group.line_start - 1, character=0),
+                            end=Position(line=group.line_end - 1, character=0),
+                        ),
+                    ),
+                )
+                symbols.append(symbol)
+
+            for keyword_name, keyword in group.keywords.items():
+                if not query or query in keyword_name:
+                    kw_symbol = SymbolInformation(
+                        name=keyword_name,
+                        kind=SymbolKind.Property,
+                        location=Location(
+                            uri=uri,
+                            range=Range(
+                                start=Position(line=keyword.line_number - 1, character=0),
+                                end=Position(line=keyword.line_number - 1, character=100),
+                            ),
+                        ),
+                        container_name=f"${group_name}",
+                    )
+                    symbols.append(kw_symbol)
+
+    return symbols
+
+
+@server.feature("textDocument/definition")
+def definition(params: DefinitionParams) -> Optional[List[Location]]:
+    """Handle go to definition requests."""
+    doc = server.workspace.get_text_document(params.text_document.uri)
+    content = doc.source
+    position = params.position
+
+    line = doc.lines[position.line]
+    word = _get_word_at_position(line, position.character)
+
+    if not word:
+        return None
+
+    word_upper = word.upper()
+    parser = GAMESSParser()
+    parsed = parser.parse(content)
+
+    locations: List[Location] = []
+
+    if word_upper in parsed.groups:
+        group = parsed.groups[word_upper]
+        locations.append(
+            Location(
+                uri=params.text_document.uri,
+                range=Range(
+                    start=Position(line=group.line_start - 1, character=0),
+                    end=Position(line=group.line_start - 1, character=len(f"${word_upper}")),
+                ),
+            )
+        )
+        return locations
+
+    current_group = parser.get_group_at_position(content, position.line + 1)
+    if current_group:
+        group = parsed.get_group(current_group)
+        if group and word_upper in group.keywords:
+            keyword = group.keywords[word_upper]
+            locations.append(
+                Location(
+                    uri=params.text_document.uri,
+                    range=Range(
+                        start=Position(line=keyword.line_number - 1, character=0),
+                        end=Position(line=keyword.line_number - 1, character=100),
+                    ),
+                )
+            )
+            return locations
+
+    return None
+
+
+@server.feature("textDocument/references")
+def references(params: ReferenceParams) -> Optional[List[Location]]:
+    """Handle find references requests."""
+    doc = server.workspace.get_text_document(params.text_document.uri)
+    content = doc.source
+    position = params.position
+
+    line = doc.lines[position.line]
+    word = _get_word_at_position(line, position.character)
+
+    if not word:
+        return None
+
+    word_upper = word.upper()
+
+    locations: List[Location] = []
+    lines = content.split("\n")
+
+    for i, line_content in enumerate(lines):
+        if re.search(rf"\${word_upper}\b", line_content, re.IGNORECASE):
+            locations.append(
+                Location(
+                    uri=params.text_document.uri,
+                    range=Range(
+                        start=Position(line=i, character=0),
+                        end=Position(line=i, character=len(line_content)),
+                    ),
+                )
+            )
+        elif re.search(rf"\b{word_upper}\s*=", line_content, re.IGNORECASE):
+            locations.append(
+                Location(
+                    uri=params.text_document.uri,
+                    range=Range(
+                        start=Position(line=i, character=0),
+                        end=Position(line=i, character=len(line_content)),
+                    ),
+                )
+            )
+
+    return locations if locations else None
+
+
 @server.feature("textDocument/codeAction")
 def code_action(params: CodeActionParams) -> List[CodeAction]:
-    """Handle code action requests.
-
-    Provides quick fixes for common issues:
-    - Add missing $END for unclosed groups
-    - Fix unknown groups by suggesting similar valid group names
-    - Add required keywords for groups
-    """
+    """Handle code action requests."""
     doc = server.workspace.get_text_document(params.text_document.uri)
     content = doc.source
     line_num = params.range.start.line
@@ -420,12 +636,10 @@ def code_action(params: CodeActionParams) -> List[CodeAction]:
     parser = GAMESSParser()
     parser.parse(content)
 
-    # Check for unclosed group warning on this line
     for warning in parser.warnings:
         if warning.get("line") == line_num + 1:
             message = warning.get("message", "")
 
-            # Add $END for unclosed groups
             if "not properly closed" in message:
                 action = CodeAction(
                     title="Add missing $END",
@@ -443,7 +657,7 @@ def code_action(params: CodeActionParams) -> List[CodeAction]:
                                             start=Position(line=line_num, character=len(line)),
                                             end=Position(line=line_num, character=len(line)),
                                         ),
-                                        new_text="\n$END",
+                                        new_text="\n\$END",
                                     )
                                 ],
                             )
@@ -452,7 +666,6 @@ def code_action(params: CodeActionParams) -> List[CodeAction]:
                 )
                 actions.append(action)
 
-            # Suggest fix for unknown groups
             if "Unknown group" in message:
                 unknown_group = message.split(": $")[-1].strip() if ": $" in message else ""
                 if unknown_group:
@@ -461,7 +674,7 @@ def code_action(params: CodeActionParams) -> List[CodeAction]:
                     )
                     for suggestion in suggestions:
                         action = CodeAction(
-                            title=f"Change to ${suggestion}",
+                            title=f"Change to \${suggestion}",
                             kind=CodeActionKind.QuickFix,
                             edit=WorkspaceEdit(
                                 changes={
@@ -481,14 +694,13 @@ def code_action(params: CodeActionParams) -> List[CodeAction]:
                         )
                         actions.append(action)
 
-    # Check if we're in a group that needs required keywords
     current_group = parser.get_group_at_position(content, line_num + 1)
     if current_group == "CONTRL":
         parsed = parser.parse(content)
         contrl_group = parsed.get_group("CONTRL")
         if contrl_group and "RUNTYP" not in contrl_group.keywords:
             action = CodeAction(
-                title="Add RUNTYP=ENERGY to $CONTRL",
+                title="Add RUNTYP=ENERGY to \$CONTRL",
                 kind=CodeActionKind.QuickFix,
                 edit=WorkspaceEdit(
                     changes={
@@ -511,12 +723,7 @@ def code_action(params: CodeActionParams) -> List[CodeAction]:
 
 @server.feature("textDocument/rename")
 def rename(params: RenameParams) -> Optional[WorkspaceEdit]:
-    """Handle rename requests.
-
-    Allows renaming:
-    - Group names
-    - Keywords within groups
-    """
+    """Handle rename requests."""
     doc = server.workspace.get_text_document(params.text_document.uri)
     content = doc.source
     position = params.position
@@ -532,15 +739,12 @@ def rename(params: RenameParams) -> Optional[WorkspaceEdit]:
     parser = GAMESSParser()
     parsed = parser.parse(content)
 
-    # Check if renaming a group
     if word_upper in GAMESS_GROUPS or word_upper.startswith("$"):
         group_name = word_upper.lstrip("$")
         if group_name in parsed.groups:
-            # Find all occurrences of this group
             changes = []
             lines = content.split("\n")
             for i, line_content in enumerate(lines):
-                # Match group start
                 match = re.match(rf"^\s*\$({group_name})\b", line_content, re.IGNORECASE)
                 if match:
                     start_char = line_content.find(f"${group_name}")
@@ -559,12 +763,10 @@ def rename(params: RenameParams) -> Optional[WorkspaceEdit]:
             if changes:
                 return WorkspaceEdit(changes={params.text_document.uri: changes})
 
-    # Check if renaming a keyword
     current_group = parser.get_group_at_position(content, position.line + 1)
     if current_group:
         group = parsed.get_group(current_group)
         if group and word_upper in group.keywords:
-            # Find and rename this keyword
             keyword = group.keywords[word_upper]
             return WorkspaceEdit(
                 changes={

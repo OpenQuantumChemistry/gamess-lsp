@@ -2,10 +2,6 @@
 
 from unittest.mock import MagicMock, patch
 
-from lsprotocol.types import (
-    DocumentFormattingParams,
-    FormattingOptions,
-    Position,
     Range,
     TextDocumentIdentifier,
 )

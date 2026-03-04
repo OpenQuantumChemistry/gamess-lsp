@@ -50,7 +50,7 @@ $END"""
 
     def test_parse_special_characters_in_values(self):
         """Test parsing values with special characters."""
-        content = '''$CONTRL ICHARG=-1 $END'''
+        content = """$CONTRL ICHARG=-1 $END"""
         parser = GAMESSParser()
         result = parser.parse(content)
         assert result.groups["CONTRL"].get_keyword("ICHARG").value == "-1"

@@ -2,90 +2,59 @@
 
 All notable changes to this project will be documented in this file.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
-
-## [Unreleased]
+## [0.2.0] - 2026-03-04
 
 ### Added
-- **Enhanced Testing Suite**:
-  - Added 34 new tests for comprehensive coverage (109 total tests)
-  - New test files: test_formatting.py, test_document_symbol.py, test_parser_edge_cases.py
-  - Tests for document formatting feature
-  - Tests for document symbols navigation
-  - Tests for parser edge cases and error handling
-
-- **Test Coverage Improvements**:
-  - Edge case handling for empty documents
-  - Parser error recovery tests
-  - Warning generation tests
-  - Convenience function tests
+- **Go to Definition** (textDocument/definition): Navigate to group and keyword definitions
+- **Find References** (textDocument/references): Find all occurrences of groups and keywords
+- **Snippet Completions**: Quick-insert templates for common GAMESS calculations
+  - Water molecule template
+  - DFT geometry optimization template
+  - Hartree-Fock single point template
+  - MP2 calculation template
+  - Frequency calculation template
+  - TD-DFT excited states template
+- **Workspace Symbols** (workspace/symbol): Search symbols across all open GAMESS files
+- New test suites:
+  - `test_definition.py` - Go to definition tests
+  - `test_references.py` - Find references tests
+  - `test_snippets.py` - Snippet completion tests
+  - `test_workspace_symbol.py` - Workspace symbols tests
 
 ### Changed
-- Updated pyproject.toml coverage configuration for proper source path
-- Improved test organization with dedicated test modules
+- Updated README.md with new features documentation
+- Enhanced completion provider to include snippet suggestions
+- Updated test count to 129 tests (100% coverage)
 
 ### Fixed
-- Fixed test parameter requirements for DocumentFormattingParams
-- Corrected test assertions for parser behavior
-
-## [0.1.1] - 2026-03-03
-
-### Added
-- **Code Actions (Quick Fixes)**:
-  - `Add missing $END`: Automatically adds $END for unclosed groups
-  - `Change to $GROUP`: Suggests similar valid group names for unknown groups
-  - `Add RUNTYP=ENERGY`: Adds required RUNTYP keyword to $CONTRL group
-  
-- **Rename Support**:
-  - Rename group names across the document
-  - Rename keywords within their groups
-  - Smart word detection at cursor position
-
-- **Code Quality Improvements**:
-  - Added .flake8 configuration file with 100 character line length
-  - Configured to work with black formatter settings
-
-### Fixed
-- **Type Safety**: Resolved MyPy type error in codeAction handler
-  - Fixed WorkspaceEdit document_changes to use proper LSP types
-  - Added proper imports for TextDocumentEdit and OptionalVersionedTextDocumentIdentifier
+- Fixed escape character issues in snippet templates
 
 ## [0.1.0] - 2026-03-02
 
 ### Added
-- Initial release of GAMESS-LSP
-- **Parser**: Complete GAMESS input file (.inp) parser
-  - Support for all standard GAMESS GROUPS
-  - Keyword-value pair parsing with case-insensitive handling
-  - Geometry data extraction
-  - Inline comment support
-  - Diagnostic warnings for unknown groups and unclosed sections
-  
-- **LSP Features**:
-  - textDocument/completion: Auto-completion for groups and keywords
-  - textDocument/hover: Hover documentation for groups and keywords
-  - textDocument/diagnostic: Real-time validation and diagnostics
-  - textDocument/didOpen and textDocument/didChange: Document synchronization
-  - textDocument/formatting: Document formatting with consistent indentation
-  - textDocument/documentSymbol: Document symbols for navigation
+- Initial LSP server implementation
+- GAMESS input file parser
+- Syntax validation with diagnostics
+- Auto-completion for groups, keywords, and values
+- Hover documentation for keywords and groups
+- Document formatting with consistent indentation
+- Document symbols for navigation
+- Code actions for quick fixes:
+  - Add missing \$END for unclosed groups
+  - Suggest corrections for unknown groups
+  - Add required keywords (e.g., RUNTYP for \$CONTRL)
+- Rename support for groups and keywords
+- Comprehensive test suite (109 tests, 100% coverage)
 
-- **Keywords Database**:
-  - Comprehensive GAMESS group documentation
-  - Keyword documentation with allowed values
-  - Support for CONTRL, SYSTEM, BASIS, SCF, DFT, STATPT, FORCE, and many more groups
-  - 40+ documented GAMESS groups
-  - 50+ documented keywords with values
+### Supported Features
+- Core GAMESS groups: CONTRL, SYSTEM, BASIS, DATA, SCF, DFT, etc.
+- Keyword and value completion with context awareness
+- Real-time diagnostics for syntax errors and warnings
+- Document formatting with 2-space indentation
 
-- **Testing**:
-  - 75 unit tests with 100% pass rate
-  - Tests for parser, server, and keywords modules
-  - Comprehensive edge case coverage
+## [0.0.1] - 2026-03-01
 
-- **Documentation**:
-  - README with installation and usage instructions
-  - Editor integration guides (VS Code, Neovim)
-  - API documentation in code
-
-[0.1.0]: https://github.com/newtontech/gamess-lsp/releases/tag/v0.1.0
-[Unreleased]: https://github.com/newtontech/gamess-lsp/compare/v0.1.1...HEAD
+### Added
+- Initial project structure
+- Basic GAMESS parser implementation
+- Development and testing setup
