@@ -58,3 +58,14 @@ All notable changes to this project will be documented in this file.
 - Initial project structure
 - Basic GAMESS parser implementation
 - Development and testing setup
+
+## [0.2.1] - 2026-03-04
+
+### Fixed
+- Fixed Python escape sequence warnings by converting snippet insertText to raw strings
+- Fixed broken imports in test_formatting.py and test_document_symbol.py
+- Updated coverage configuration files
+
+### Changed
+- All 126 tests passing
+- Clean test output with no deprecation warnings
