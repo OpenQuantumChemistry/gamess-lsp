@@ -51,11 +51,11 @@ ignore_missing_imports = true
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["src"]
-addopts = "--cov=gamess_lsp --cov-report=term-missing --cov-report=html -v"
+addopts = "--cov=src/gamess_lsp --cov-report=term-missing --cov-report=html -v"
 asyncio_mode = "auto"
 
 [tool.coverage.run]
-source = ["gamess_lsp"]
+source = ["src/gamess_lsp"]
 branch = true
 omit = ["*/tests/*", "*/test_*", "*/conftest.py"]
 

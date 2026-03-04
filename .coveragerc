@@ -1,10 +1,6 @@
 [run]
 source = src/gamess_lsp
 branch = True
-omit = 
-    */tests/*
-    */test_*
-    */conftest.py
 
 [report]
 exclude_lines =
