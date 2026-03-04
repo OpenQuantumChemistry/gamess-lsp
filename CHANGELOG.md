@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.2.2] - 2026-03-04
+
+### Fixed
+- Fixed E203 whitespace issue in parser.py
+- Fixed mypy type error in server.py
+- Removed unused imports in test_formatting.py
+
+### Added
+- Comprehensive test suite for document_symbol feature
+- 4 new tests for document symbols
+
+### Changed
+- Updated test count to 130 tests
+- All code quality tools passing
+
 All notable changes to this project will be documented in this file.
 
 ## [0.2.0] - 2026-03-04
