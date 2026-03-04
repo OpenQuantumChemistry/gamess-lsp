@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.2.3] - 2026-03-05
+
+### Fixed
+- Fixed black formatting (E203) in parser.py
+
+### Changed
+- All 130 tests passing
+- All code quality tools passing (flake8, mypy, black)
+
+# Changelog
+
 ## [0.2.2] - 2026-03-04
 
 ### Fixed
