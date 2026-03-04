@@ -57,7 +57,7 @@ GAMESS_SNIPPETS = {
     "water": {
         "label": "Water molecule",
         "documentation": "Water molecule geometry with DFT optimization",
-        "insertText": """! Water molecule DFT calculation
+        "insertText": r"""! Water molecule DFT calculation
  \$CONTRL SCFTYP=RHF DFTTYP=B3LYP RUNTYP=OPTIMIZE \$END
  \$SYSTEM MWORDS=100 \$END
  \$BASIS GBASIS=CC-PVDZ \$END
@@ -73,7 +73,7 @@ H     1.0   0.000000   0.757210  -0.469957
     "dft-opt": {
         "label": "DFT optimization",
         "documentation": "Standard DFT geometry optimization template",
-        "insertText": """! DFT geometry optimization
+        "insertText": r"""! DFT geometry optimization
  \$CONTRL SCFTYP=RHF DFTTYP=B3LYP RUNTYP=OPTIMIZE \$END
  \$SYSTEM MWORDS=100 \$END
  \$BASIS GBASIS=CC-PVDZ \$END
@@ -88,7 +88,7 @@ H     1.0   0.000000   0.757210  -0.469957
     "hf-sp": {
         "label": "Hartree-Fock single point",
         "documentation": "Hartree-Fock single point energy calculation",
-        "insertText": """! HF single point energy
+        "insertText": r"""! HF single point energy
  \$CONTRL SCFTYP=RHF RUNTYP=ENERGY \$END
  \$SYSTEM MWORDS=100 \$END
  \$BASIS GBASIS=STO NGAUSS=3 \$END
@@ -102,7 +102,7 @@ H     1.0   0.000000   0.757210  -0.469957
     "mp2": {
         "label": "MP2 calculation",
         "documentation": "MP2 correlation energy calculation",
-        "insertText": """! MP2 calculation
+        "insertText": r"""! MP2 calculation
  \$CONTRL SCFTYP=RHF RUNTYP=ENERGY MPLEVL=2 \$END
  \$SYSTEM MWORDS=100 \$END
  \$BASIS GBASIS=CC-PVDZ \$END
@@ -117,7 +117,7 @@ H     1.0   0.000000   0.757210  -0.469957
     "freq": {
         "label": "Frequency calculation",
         "documentation": "Vibrational frequency calculation",
-        "insertText": """! Frequency calculation
+        "insertText": r"""! Frequency calculation
  \$CONTRL SCFTYP=RHF RUNTYP=HESSIAN \$END
  \$SYSTEM MWORDS=100 \$END
  \$BASIS GBASIS=CC-PVDZ \$END
@@ -132,7 +132,7 @@ H     1.0   0.000000   0.757210  -0.469957
     "tddft": {
         "label": "TD-DFT calculation",
         "documentation": "Time-dependent DFT excited states calculation",
-        "insertText": """! TD-DFT excited states
+        "insertText": r"""! TD-DFT excited states
  \$CONTRL SCFTYP=RHF DFTTYP=B3LYP RUNTYP=ENERGY \$END
  \$SYSTEM MWORDS=100 \$END
  \$BASIS GBASIS=CC-PVDZ \$END
@@ -600,7 +600,7 @@ def references(params: ReferenceParams) -> Optional[List[Location]]:
     lines = content.split("\n")
 
     for i, line_content in enumerate(lines):
-        if re.search(rf"\${word_upper}\b", line_content, re.IGNORECASE):
+        if re.search(rf"\\${word_upper}\b", line_content, re.IGNORECASE):
             locations.append(
                 Location(
                     uri=params.text_document.uri,
@@ -657,7 +657,7 @@ def code_action(params: CodeActionParams) -> List[CodeAction]:
                                             start=Position(line=line_num, character=len(line)),
                                             end=Position(line=line_num, character=len(line)),
                                         ),
-                                        new_text="\n\$END",
+                                        new_text="\n\\$END",
                                     )
                                 ],
                             )
@@ -674,7 +674,7 @@ def code_action(params: CodeActionParams) -> List[CodeAction]:
                     )
                     for suggestion in suggestions:
                         action = CodeAction(
-                            title=f"Change to \${suggestion}",
+                            title=f"Change to \\${suggestion}",
                             kind=CodeActionKind.QuickFix,
                             edit=WorkspaceEdit(
                                 changes={
@@ -700,7 +700,7 @@ def code_action(params: CodeActionParams) -> List[CodeAction]:
         contrl_group = parsed.get_group("CONTRL")
         if contrl_group and "RUNTYP" not in contrl_group.keywords:
             action = CodeAction(
-                title="Add RUNTYP=ENERGY to \$CONTRL",
+                title="Add RUNTYP=ENERGY to \\$CONTRL",
                 kind=CodeActionKind.QuickFix,
                 edit=WorkspaceEdit(
                     changes={
