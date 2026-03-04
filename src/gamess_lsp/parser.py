@@ -163,7 +163,7 @@ class GAMESSParser:
                     current_group = GAMESSGroup(name=group_name, line_start=line_num)
 
                     # Parse keywords in this line (after the group name)
-                    rest_of_line = stripped[len(group_match.group(0)):].strip()
+                    rest_of_line = stripped[len(group_match.group(0)) :].strip()
                     if rest_of_line:
                         self._parse_keywords(rest_of_line, current_group, line_num)
 
