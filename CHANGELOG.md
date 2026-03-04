@@ -95,3 +95,13 @@ All notable changes to this project will be documented in this file.
 ### Changed
 - All 126 tests passing
 - Clean test output with no deprecation warnings
+
+## [0.2.4] - 2026-03-05
+
+### Fixed
+- Added E203 to flake8 ignore list for black compatibility
+
+### Changed
+- All 130 tests passing
+- All code quality tools passing (flake8, mypy, black)
+- Clean git status
