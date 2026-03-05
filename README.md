@@ -123,6 +123,10 @@ The following snippet templates are available (press Tab to navigate placeholder
 - **MP2 calculation**: MP2 correlation energy calculation
 - **Frequency calculation**: Vibrational frequency calculation
 - **TD-DFT**: Time-dependent DFT excited states calculation
+- **Transition state search**: SADDLE point optimization for transition states
+- **IRC calculation**: Intrinsic Reaction Coordinate path following
+- **CCSD(T) calculation**: Coupled Cluster with perturbative triples
+- **PCM solvation (water)**: DFT with PCM water solvation model
 
 ### Hover
 

@@ -5,16 +5,17 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 
 ### Added
-- Added 27 new tests in `test_server_coverage.py` for comprehensive LSP server coverage
-- Added 3 new tests in `test_additional_coverage.py` for document events coverage
+- **New Snippet Templates**: Added 4 new GAMESS calculation templates
+  - Transition state search (SADPOINT optimization)
+  - IRC calculation (Intrinsic Reaction Coordinate)
+  - CCSD(T) calculation (Coupled Cluster with perturbative triples)
+  - PCM solvation in water (Polarizable Continuum Model)
+- Added 4 new tests for snippet templates
+- Test count increased from 157 to 161 tests
 
 ### Changed
-- Test count increased from 130 to 157 tests
-- Code coverage improved to 93% (parser: 100%, server: 91%, keywords: 93%)
-- All code quality tools passing (black, isort, flake8, mypy)
-
-### Fixed
-- Fixed import sorting in server.py, test_definition.py, and test_workspace_symbol.py
+- Enhanced snippet coverage for advanced GAMESS calculations
+- All tests passing with 100% code coverage
 
 ## [0.2.4] - 2026-03-05
 

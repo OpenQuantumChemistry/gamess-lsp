@@ -71,3 +71,35 @@ class TestSnippets:
         """Test all snippets have non-empty documentation."""
         for snippet_id, snippet in GAMESS_SNIPPETS.items():
             assert snippet["documentation"], f"Snippet {snippet_id} has empty documentation"
+
+    def test_ts_search_snippet_content(self):
+        """Test transition state search snippet has required groups."""
+        snippet = GAMESS_SNIPPETS.get("ts-search")
+        assert snippet is not None
+        assert "SADPOINT" in snippet["insertText"]
+        assert "$STATPT" in snippet["insertText"]
+        assert "IFOLOW" in snippet["insertText"]
+
+    def test_irc_calc_snippet_content(self):
+        """Test IRC calculation snippet has required groups."""
+        snippet = GAMESS_SNIPPETS.get("irc-calc")
+        assert snippet is not None
+        assert "IRC" in snippet["insertText"]
+        assert "$IRC" in snippet["insertText"]
+        assert "NPOINT" in snippet["insertText"]
+
+    def test_ccsd_snippet_content(self):
+        """Test CCSD(T) calculation snippet has required groups."""
+        snippet = GAMESS_SNIPPETS.get("ccsd")
+        assert snippet is not None
+        assert "CCSD(T)" in snippet["insertText"]
+        assert "$CC" in snippet["insertText"]
+        assert "CCCONV" in snippet["insertText"]
+
+    def test_pcm_water_snippet_content(self):
+        """Test PCM solvation snippet has required groups."""
+        snippet = GAMESS_SNIPPETS.get("pcm-water")
+        assert snippet is not None
+        assert "PCM" in snippet["insertText"]
+        assert "$PCM" in snippet["insertText"]
+        assert "WATER" in snippet["insertText"]

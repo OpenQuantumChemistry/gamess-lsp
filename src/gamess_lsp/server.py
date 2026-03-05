@@ -144,6 +144,67 @@ H     1.0   0.000000   0.757210  -0.469957
 \${3:Atom}   \${4:Z}   \${5:x}   \${6:y}   \${7:z}
  \$END""",
     },
+    "ts-search": {
+        "label": "Transition state search",
+        "documentation": "Transition state optimization using SADDLE point calculation",
+        "insertText": r"""! Transition state search
+ \$CONTRL SCFTYP=RHF RUNTYP=SADPOINT \$END
+ \$SYSTEM MWORDS=100 \$END
+ \$BASIS GBASIS=CC-PVDZ \$END
+ \$STATPT OPTTOL=0.0001 NSTEP=100 IFOLOW=1 HESS=CALC \$END
+ \$DATA
+\${1:Transition state}
+\${2:C1}
+
+\${3:Atom}   \${4:Z}   \${5:x}   \${6:y}   \${7:z}
+ \$END""",
+    },
+    "irc-calc": {
+        "label": "IRC calculation",
+        "documentation": "Intrinsic Reaction Coordinate path following from TS",
+        "insertText": r"""! IRC calculation
+ \$CONTRL SCFTYP=RHF RUNTYP=IRC \$END
+ \$SYSTEM MWORDS=100 \$END
+ \$BASIS GBASIS=CC-PVDZ \$END
+ \$IRC NPOINT=50 STRIDE=0.1 FORWRD=.TRUE. \$END
+ \$DATA
+\${1:IRC path}
+\${2:C1}
+
+\${3:Atom}   \${4:Z}   \${5:x}   \${6:y}   \${7:z}
+ \$END""",
+    },
+    "ccsd": {
+        "label": "CCSD(T) calculation",
+        "documentation": "Coupled Cluster single point with perturbative triples",
+        "insertText": r"""! CCSD(T) single point
+ \$CONTRL SCFTYP=RHF RUNTYP=ENERGY CCTYP=CCSD(T) \$END
+ \$SYSTEM MWORDS=100 MEMDDI=1000 \$END
+ \$BASIS GBASIS=CC-PVTZ \$END
+ \$CC NCORE=0 MAXCC=100 CCCONV=1.0E-06 \$END
+ \$DATA
+\${1:Molecule title}
+\${2:C1}
+
+\${3:Atom}   \${4:Z}   \${5:x}   \${6:y}   \${7:z}
+ \$END""",
+    },
+    "pcm-water": {
+        "label": "PCM solvation (water)",
+        "documentation": "DFT calculation with PCM water solvation",
+        "insertText": r"""! PCM solvation in water
+ \$CONTRL SCFTYP=RHF DFTTYP=B3LYP RUNTYP=OPTIMIZE \$END
+ \$SYSTEM MWORDS=100 \$END
+ \$BASIS GBASIS=CC-PVDZ \$END
+ \$PCM SOLVNT=WATER ICAV=0 \$END
+ \$STATPT OPTTOL=0.0001 NSTEP=50 \$END
+ \$DATA
+\${1:Molecule in water}
+\${2:C1}
+
+\${3:Atom}   \${4:Z}   \${5:x}   \${6:y}   \${7:z}
+ \$END""",
+    },
 }
 
 

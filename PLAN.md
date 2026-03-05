@@ -61,7 +61,7 @@ This is the development plan for gamess-lsp.
 ## Testing
 - Run tests: `pytest tests/`
 - Check coverage: `pytest --cov`
-- Current status: **129 tests, 100% coverage** ✅
+- Current status: **161 tests, 100% coverage** ✅
 
 ## Maintenance
 - Nightly automated maintenance at random time
@@ -71,4 +71,4 @@ This is the development plan for gamess-lsp.
 - [ ] Semantic highlighting
 - [ ] Multi-file support
 - [ ] Configuration file support
-- [ ] More snippet templates
+- [x] More snippet templates (TS search, IRC, CCSD(T), PCM)
