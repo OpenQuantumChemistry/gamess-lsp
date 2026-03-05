@@ -22,19 +22,19 @@ from lsprotocol.types import (
     DocumentSymbolParams,
     Hover,
     HoverParams,
+    InsertTextFormat,
     Location,
+    OptionalVersionedTextDocumentIdentifier,
     Position,
     Range,
     ReferenceParams,
     RenameParams,
     SymbolInformation,
-    OptionalVersionedTextDocumentIdentifier,
     SymbolKind,
     TextDocumentEdit,
     TextEdit,
     WorkspaceEdit,
     WorkspaceSymbolParams,
-    InsertTextFormat,
 )
 from pygls.server import LanguageServer
 from pygls.workspace import Document

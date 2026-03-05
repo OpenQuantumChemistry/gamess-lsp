@@ -1,7 +1,7 @@
 """Tests for Go to Definition feature."""
 
-from gamess_lsp.server import _get_word_at_position
 from gamess_lsp.parser import GAMESSParser
+from gamess_lsp.server import _get_word_at_position
 
 
 class TestGetWordAtPosition:

@@ -1,7 +1,8 @@
 """Tests for Workspace Symbol feature."""
 
-from gamess_lsp.parser import GAMESSParser
 from lsprotocol.types import SymbolKind
+
+from gamess_lsp.parser import GAMESSParser
 
 
 class TestWorkspaceSymbolLogic:

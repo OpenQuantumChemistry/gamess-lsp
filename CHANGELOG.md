@@ -1,5 +1,26 @@
 # Changelog
 
+All notable changes to this project will be documented in this file.
+
+## [Unreleased]
+
+### Fixed
+- Fixed import sorting in server.py, test_definition.py, and test_workspace_symbol.py
+
+### Changed
+- All 130 tests passing
+- All code quality tools passing (black, isort, flake8, mypy)
+
+## [0.2.4] - 2026-03-05
+
+### Fixed
+- Added E203 to flake8 ignore list for black compatibility
+
+### Changed
+- All 130 tests passing
+- All code quality tools passing (flake8, mypy, black)
+- Clean git status
+
 ## [0.2.3] - 2026-03-05
 
 ### Fixed
@@ -8,8 +29,6 @@
 ### Changed
 - All 130 tests passing
 - All code quality tools passing (flake8, mypy, black)
-
-# Changelog
 
 ## [0.2.2] - 2026-03-04
 
@@ -26,7 +45,16 @@
 - Updated test count to 130 tests
 - All code quality tools passing
 
-All notable changes to this project will be documented in this file.
+## [0.2.1] - 2026-03-04
+
+### Fixed
+- Fixed Python escape sequence warnings by converting snippet insertText to raw strings
+- Fixed broken imports in test_formatting.py and test_document_symbol.py
+- Updated coverage configuration files
+
+### Changed
+- All 126 tests passing
+- Clean test output with no deprecation warnings
 
 ## [0.2.0] - 2026-03-04
 
@@ -42,10 +70,10 @@ All notable changes to this project will be documented in this file.
   - TD-DFT excited states template
 - **Workspace Symbols** (workspace/symbol): Search symbols across all open GAMESS files
 - New test suites:
-  - `test_definition.py` - Go to definition tests
-  - `test_references.py` - Find references tests
-  - `test_snippets.py` - Snippet completion tests
-  - `test_workspace_symbol.py` - Workspace symbols tests
+  - test_definition.py - Go to definition tests
+  - test_references.py - Find references tests
+  - test_snippets.py - Snippet completion tests
+  - test_workspace_symbol.py - Workspace symbols tests
 
 ### Changed
 - Updated README.md with new features documentation
@@ -84,24 +112,3 @@ All notable changes to this project will be documented in this file.
 - Initial project structure
 - Basic GAMESS parser implementation
 - Development and testing setup
-
-## [0.2.1] - 2026-03-04
-
-### Fixed
-- Fixed Python escape sequence warnings by converting snippet insertText to raw strings
-- Fixed broken imports in test_formatting.py and test_document_symbol.py
-- Updated coverage configuration files
-
-### Changed
-- All 126 tests passing
-- Clean test output with no deprecation warnings
-
-## [0.2.4] - 2026-03-05
-
-### Fixed
-- Added E203 to flake8 ignore list for black compatibility
-
-### Changed
-- All 130 tests passing
-- All code quality tools passing (flake8, mypy, black)
-- Clean git status
