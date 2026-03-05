@@ -2,7 +2,6 @@
 
 from unittest.mock import MagicMock, patch
 
-# import pytest
 from lsprotocol.types import (
     CodeActionParams,
     CompletionParams,
@@ -44,15 +43,14 @@ class TestFormattingCoverage:
         )
 
         result = formatting(params)
-        assert isinstance(result, list)  # Empty document returns edit
+        # Empty document returns a single edit replacing content with empty string
+        assert isinstance(result, list)
 
     @patch("gamess_lsp.server.server")
     def test_formatting_complex_document(self, mock_server):
         """Test formatting a complex document."""
         mock_doc = MagicMock()
-        mock_doc.source = """$CONTRL SCFTYP=RHF $END
-$SYSTEM MWORDS=100 $END
-"""
+        mock_doc.source = "$CONTRL SCFTYP=RHF $END\n$SYSTEM MWORDS=100 $END\n"
         mock_doc.lines = ["$CONTRL SCFTYP=RHF $END\n", "$SYSTEM MWORDS=100 $END\n"]
         mock_server.workspace.get_text_document.return_value = mock_doc
 
@@ -69,12 +67,7 @@ $SYSTEM MWORDS=100 $END
     def test_formatting_with_geometry(self, mock_server):
         """Test formatting document with geometry."""
         mock_doc = MagicMock()
-        mock_doc.source = """$DATA
-Water
-C1
-O 8.0 0.0 0.0 0.0
-$END
-"""
+        mock_doc.source = "$DATA\nWater\nC1\nO 8.0 0.0 0.0 0.0\n$END\n"
         mock_doc.lines = mock_doc.source.split("\n")
         mock_server.workspace.get_text_document.return_value = mock_doc
 
@@ -175,7 +168,7 @@ class TestHoverCoverage:
         )
 
         result = hover(params)
-        # result may be None for empty lines or True  # May return None
+        assert result is not None
 
     @patch("gamess_lsp.server.server")
     def test_hover_on_empty_line(self, mock_server):
@@ -189,10 +182,8 @@ class TestHoverCoverage:
             text_document=TextDocumentIdentifier(uri="file:///test.inp"),
             position=Position(line=0, character=0),
         )
-
-        result = hover(params)
         # result may be None for empty lines
-        # May return None for empty lines
+        hover(params)
 
     @patch("gamess_lsp.server.server")
     def test_hover_keyword_not_in_group(self, mock_server):
@@ -206,9 +197,8 @@ class TestHoverCoverage:
             text_document=TextDocumentIdentifier(uri="file:///test.inp"),
             position=Position(line=0, character=8),
         )
-
-        _ = hover(params)
         # Should handle unknown keywords gracefully
+        hover(params)
 
 
 class TestDefinitionCoverage:
@@ -240,12 +230,12 @@ class TestDefinitionCoverage:
 
         params = DefinitionParams(
             text_document=TextDocumentIdentifier(uri="file:///test.inp"),
-            position=Position(line=1, character=8),  # On MWORDS in $SYSTEM
+            position=Position(line=1, character=8),
         )
 
         result = definition(params)
         # Should find keyword in its group
-        # result may be None for empty lines or True  # May return None
+        assert result is not None
 
     @patch("gamess_lsp.server.server")
     def test_definition_no_current_group(self, mock_server):
@@ -300,8 +290,9 @@ class TestReferencesCoverage:
 
         # Looking for CONTRL should find it
         result = references(params)
-        # result may be None for empty lines or True  # May return None
-        assert result is None or len(result) >= 0
+        # May return None or list
+        if result is not None:
+            assert len(result) >= 0
 
     @patch("gamess_lsp.server.server")
     def test_references_keyword_matches(self, mock_server):
@@ -313,12 +304,12 @@ class TestReferencesCoverage:
 
         params = ReferenceParams(
             text_document=TextDocumentIdentifier(uri="file:///test.inp"),
-            position=Position(line=0, character=8),  # On SCFTYP
+            position=Position(line=0, character=8),
             context=MagicMock(),
         )
 
         result = references(params)
-        # result may be None for empty lines or True  # May return None
+        assert result is not None
         # Should find both occurrences of SCFTYP
 
 
@@ -441,7 +432,7 @@ class TestRenameCoverage:
         # Trying to rename CONTRL
         result = rename(params)
         # Should return edit even though it's a rename
-        # result may be None for empty lines or True  # May return None
+        assert result is not None
 
     @patch("gamess_lsp.server.server")
     def test_rename_keyword_not_in_current_group(self, mock_server):
@@ -453,12 +444,12 @@ class TestRenameCoverage:
 
         params = RenameParams(
             text_document=TextDocumentIdentifier(uri="file:///test.inp"),
-            position=Position(line=0, character=8),  # On SCFTYP
+            position=Position(line=0, character=8),
             new_name="NEWKEY",
         )
 
         result = rename(params)
-        # result may be None for empty lines or True  # May return None
+        assert result is not None
 
     @patch("gamess_lsp.server.server")
     def test_rename_with_dollar_prefix(self, mock_server):
@@ -475,4 +466,4 @@ class TestRenameCoverage:
         )
 
         result = rename(params)
-        # result may be None for empty lines or True  # May return None
+        assert result is not None
